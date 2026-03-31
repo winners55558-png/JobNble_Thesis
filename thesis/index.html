@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobNble - home</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="site-header">
+        
+        <div class="logo-container">
+            <a href="index.html" aria-label="กลับสู่หน้าแรก JobNble">
+                <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
+            </a>
+        </div>
+
+        <nav class="navbar" aria-label="เมนูนำทางหลัก">
+            <ul class="main-nav">
+                
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        นายจ้าง
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="employer-profile.html">โปรไฟล์</a></li>
+                        <li><a href="home-employer.html">หน้าหลัก</a></li>
+                        <li><a href="post-job.html">โพสต์ประกาศงาน</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        ผู้หางาน
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="jobseeker-profile.html">โปรไฟล์</a></li>
+                        <li><a href="home-jobseeker.html">หน้าหลัก</a></li>
+                        <li><a href="resume.html">สร้างเรซูเม่</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        เกี่ยวกับเรา
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="about-vision.html">วิสัยทัศน์</a></li>
+                        <li><a href="about-team.html">ทีมงาน</a></li>
+                        <li><a href="contact.html">ติดต่อเรา</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item last-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        เข้าสู่ระบบ/สมัครสมาชิก
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu login-register-dropdown">
+                        <li><a href="login-employer.html">สำหรับนายจ้าง</a></li>
+                        <li><a href="login-jobseeker.html">สำหรับผู้หางาน</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro-section">
+            <div class="intro-container">
+                <div class="intro-text">
+                    <h1>JobNble</h1>
+                    <p>แพลตฟอร์มหางานที่สร้างขึ้นเพื่อทุกคน เชื่อมโยงผู้พิการที่มีศักยภาพเข้ากับองค์กรที่เปิดรับความหลากหลาย เรามุ่งมั่นที่จะเป็นส่วนหนึ่งในการสร้างโอกาสทางอาชีพที่เท่าเทียม พร้อมขับเคลื่อนสังคมแห่งการทำงานที่ยั่งยืนและเปิดกว้างสำหรับทุกความสามารถ</p>
+                </div>
+                <div class="intro-image">
+                    <img src="disable-pic.jpg" alt="ภาพตัวแทนผู้พิการทำงาน" class="disable-pic">
+                </div>
+            </div>
+        </section>
+
+        <section class="news-section">
+            <div class="news-container">
+                <div class="news-badge">อัปเดตใหม่!</div>
+                <h2 class="news-title">ข่าวสาร</h2>
+
+                <div class="carousel-wrapper">
+                    <button class="carousel-btn left-btn" aria-label="ข่าวสารก่อนหน้า">
+                        <svg width="20" height="30" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+
+                    <div class="carousel-track-container">
+                        <ul class="carousel-track">
+                            <li class="carousel-slide current-slide">
+                                <img src="news1.jpg" alt="ข่าวการจ้างงานผู้พิการ" class="news-image">
+                                <div class="news-info">
+                                    <p class="news-text"><strong>รัฐบาลหนุนสถานประกอบการจ้างงานผู้พิการ:</strong> กระทรวงแรงงานเร่งส่งเสริมนายจ้างปฏิบัติตามกฎหมายจ้างงานผู้พิการ (มาตรา 33) เพื่อสร้างโอกาส ลดความเหลื่อมล้ำ พร้อมเสนอมาตรการลดหย่อนภาษีเพื่อเป็นแรงจูงใจให้องค์กรต่างๆ เปิดรับความหลากหลายมากขึ้น</p>
+                                    <a href="https://www.mol.go.th/" target="_blank" class="news-read-more">ดูเพิ่มเติม</a>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <img src="news2.jpg" alt="ข่าว ก.ล.ต." class="news-image">
+                                <div class="news-info">
+                                    <p class="news-text"><strong>ก.ล.ต. ขับเคลื่อนการจ้างงานคนพิการในตลาดทุนไทย:</strong> โครงการนำร่องที่มุ่งสร้างพื้นที่ทำงานที่เปิดกว้าง สนับสนุนบริษัทจดทะเบียนในไทยรับคนพิการเข้าทำงานในสายงานที่เหมาะสมกับศักยภาพ เพื่อมุ่งสู่การเติบโตอย่างยั่งยืนขององค์กร (ESG)</p>
+                                    <a href="https://www.sec.or.th/TH/Pages/Sustainability_Award_for_the_Disabilities.aspx" target="_blank" class="news-read-more">ดูเพิ่มเติม</a>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <img src="news3.jpg" alt="ข่าวโมเดลบริษัทเอกชน" class="news-image">
+                                <div class="news-info">
+                                    <p class="news-text"><strong>ภาคเอกชนชูโมเดล 'Inclusive Workplace':</strong> หลายองค์กรชั้นนำในไทยเริ่มปรับสภาพแวดล้อมและนโยบายการทำงาน (Universal Design) เพื่อรองรับพนักงานทุกกลุ่ม รวมถึงผู้พิการทางการเคลื่อนไหว ดึงดูดทักษะที่หลากหลายเข้าสู่องค์กร</p>
+                                    <a href="https://mgronline.com/qol/detail/9690000019440" target="_blank" class="news-read-more">ดูเพิ่มเติม</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="carousel-btn right-btn" aria-label="ข่าวสารถัดไป">
+                        <svg width="20" height="30" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+
+                <div class="carousel-nav">
+                    <button class="carousel-indicator current-indicator" aria-label="ไปที่ข่าว 1"></button>
+                    <button class="carousel-indicator" aria-label="ไปที่ข่าว 2"></button>
+                    <button class="carousel-indicator" aria-label="ไปที่ข่าว 3"></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="trending-jobs-section">
+            <div class="trending-container">
+                <h2 class="trending-title">งานที่กำลังได้รับความนิยม</h2>
+
+                <div class="job-slider-wrapper">
+                    <button class="job-nav-btn job-prev-btn" aria-label="เลื่อนดูงานก่อนหน้า">
+                        <svg width="44" height="60" viewBox="0 0 24 24" fill="none" stroke="#363636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+
+                    <div class="job-track-container">
+                        <ul class="job-track">
+                            <li class="job-card">
+                                <img src="job1.png" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">พนักงานบัญชี</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : สาทร, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางการเคลื่อนไหว</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job2.png" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">เจ้าหน้าที่ธุรการ (Admin)</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : บางนา, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางการได้ยิน</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job3.webp" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">พนักงานบรรจุภัณฑ์</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : สมุทรปราการ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางสติปัญญา</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job4.webp" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">เจ้าหน้าที่ IT Support</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : ดินแดง, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางร่างกาย</span>
+                                </div>
+                            </li>
+
+                            <li class="job-card">
+                                <img src="job5.jpg" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">พนักงาน Call Center</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : ห้วยขวาง, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางร่างกาย</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job6.png" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">พนักงานคีย์ข้อมูล</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : อโศก, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางการได้ยิน</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job7.jpg" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">บาริสต้า (Barista)</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : ปทุมวัน, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางสติปัญญา</span>
+                                </div>
+                            </li>
+                            <li class="job-card">
+                                <img src="job8.jpg" alt="โลโก้บริษัท" class="job-logo">
+                                <h3 class="job-title">ช่างเย็บผ้าอุตสาหกรรม</h3>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>สถานที่ : บางแค, กรุงเทพฯ</span>
+                                </div>
+                                <div class="job-detail">
+                                    <svg class="job-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>ประเภทความพิการ : ทางร่างกาย</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="job-nav-btn job-next-btn" aria-label="เลื่อนดูงานเพิ่มเติม">
+                        <svg width="44" height="60" viewBox="0 0 24 24" fill="none" stroke="#363636" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                    
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <h2 class="stats-title">ยินดีต้อนรับเข้าสู่ JobNble</h2>
+            
+            <div class="stats-container">
+                <div class="stats-cards-wrapper">
+                    <div class="stat-card platform-stat">
+                        <span class="stat-number" id="total-hired-stat">10,000+</span>
+                        <span class="stat-label">ผู้หางานถูกจ้าง</span>
+                    </div>
+
+                    <div class="stat-card company-stat">
+                        <div class="company-name">บริษัท ซีพี ออลล์ จำกัด (มหาชน)</div>
+                        <div class="top-employer-badge">จ้างเยอะที่สุด</div>
+                        
+                        <div class="company-stats-inner">
+                            <div class="company-stat-item">
+                                <span class="stat-number" id="company-hired-stat">1,000</span>
+                                <span class="stat-label">จ้างผู้หางาน</span>
+                            </div>
+                            <div class="company-stat-item">
+                                <span class="stat-number" id="company-tax-stat">20%</span>
+                                <span class="stat-label">ภาษีที่ถูกลดหย่อน</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ad-section">
+            <img src="banner.webp" alt="Advertisement from a company supporting inclusive hiring of people with disabilities." class="ad-image">
+        </section>
+
+        <section class="employer-section">
+            
+            <h2 class="employer-title">บริษัทที่โพสต์ประกาศงาน</h2>
+            <p class="employer-subtitle">ร่วมงานกับองค์กรชั้นนำที่พร้อมเปิดรับและสนับสนุนศักยภาพของคุณ</p>
+            
+            <div class="employer-slider-wrapper">
+                
+                <button class="employer-btn prev-employer-btn" aria-label="เลื่อนดูบริษัทก่อนหน้า">
+                    <svg width="20" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+
+                <div class="employer-track-container">
+                    <ul class="employer-track">
+                        
+                        <li class="employer-card">
+                            <img src="logo-cpall.jpg" alt="บริษัท ซีพี ออลล์ จำกัด (มหาชน)" title="บริษัท ซีพี ออลล์ จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="logo-central.png" alt="บริษัท เซ็นทรัลพัฒนา จำกัด (มหาชน)" title="บริษัท เซ็นทรัลพัฒนา จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="job5.jpg" alt="บริษัท แอดวานซ์ อินโฟร์ เซอร์วิส จำกัด (มหาชน)" title="บริษัท แอดวานซ์ อินโฟร์ เซอร์วิส จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="job4.webp" alt="บริษัท ทรู คอร์ปอเรชั่น จำกัด (มหาชน)" title="บริษัท ทรู คอร์ปอเรชั่น จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="logo-ptt.png" alt="บริษัท ปตท. จำกัด (มหาชน)" title="บริษัท ปตท. จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="logo-lotus.png" alt="บริษัท เอก-ชัย ดีสทริบิวชั่น ซิสเทม จำกัด (Lotus's)" title="บริษัท เอก-ชัย ดีสทริบิวชั่น ซิสเทม จำกัด (Lotus's)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="logo-scg.png" alt="บริษัท ปูนซิเมนต์ไทย จำกัด (มหาชน)" title="บริษัท ปูนซิเมนต์ไทย จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+                        <li class="employer-card">
+                            <img src="job1.png" alt="ธนาคารกรุงไทย จำกัด (มหาชน)" title="ธนาคารกรุงไทย จำกัด (มหาชน)" class="employer-logo">
+                        </li>
+
+                    </ul>
+                </div>
+
+                <button class="employer-btn next-employer-btn" aria-label="เลื่อนดูบริษัทเพิ่มเติม">
+                    <svg width="20" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                
+            </div>
+        </section>
+
+        <section class="video-skills-section">
+            <div class="video-skills-container">
+                <div class="video-grid">
+                    
+                    <div class="video-card">
+                        <a href="https://www.youtube.com/watch?v=f5u7eAFcJ38" target="_blank" class="video-link" aria-label="ดูวิดีโอเทคนิคสัมภาษณ์งาน">
+                            <img src="https://img.youtube.com/vi/f5u7eAFcJ38/maxresdefault.jpg" alt="ปกคลิปเทคนิคสัมภาษณ์งาน" class="video-thumbnail">
+                            <div class="play-icon-overlay">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#6E6E6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                            </div>
+                        </a>
+                        <div class="video-info">
+                            <p class="video-channel">จากช่อง : Hunter B</p>
+                            <p class="video-desc">10 เทคนิคสัมภาษณ์งานสุดโหด ที่ HR ชอบใช้ และวิธีรับมือแบบมือโปร</p>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <a href="https://www.youtube.com/watch?v=PgHF7lr22hI" target="_blank" class="video-link" aria-label="ดูวิดีโอการผูกมิตรในที่ทำงาน">
+                            <img src="https://img.youtube.com/vi/PgHF7lr22hI/maxresdefault.jpg" alt="ปกคลิปวิธีผูกมิตรกับเพื่อนร่วมงาน" class="video-thumbnail">
+                            <div class="play-icon-overlay">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#6E6E6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                            </div>
+                        </a>
+                        <div class="video-info">
+                            <p class="video-channel">จากช่อง : Mission To The Moon</p>
+                            <p class="video-desc">เพิ่งเข้าที่ทำงานใหม่ ปรับตัวและเข้าสังคมกับเพื่อนร่วมงานอย่างไรให้ราบรื่น?</p>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <a href="https://www.youtube.com/watch?v=xkKjHkR95Mg" target="_blank" class="video-link" aria-label="ดูวิดีโอเทคนิคการนำเสนอ">
+                            <img src="https://img.youtube.com/vi/xkKjHkR95Mg/maxresdefault.jpg" alt="ปกคลิปเทคนิคการพรีเซนต์" class="video-thumbnail">
+                            <div class="play-icon-overlay">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#6E6E6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                            </div>
+                        </a>
+                        <div class="video-info">
+                            <p class="video-channel">จากช่อง : สรุปให้ Podcast</p>
+                            <p class="video-desc">เทคนิคพรีเซนต์งานแบบเหนือชั้น ที่ช่วยให้คุณโน้มน้าวใจคนฟังได้ผ่านฉลุย</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            
+            <div class="footer-socials">
+                <a href="#" aria-label="ไปที่หน้า TikTok ของ JobNble">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black"/>
+                        <path d="M22.84 10.5V26.26C22.84 27.94 21.48 29.3 19.8 29.3C18.12 29.3 16.76 27.94 16.76 26.26C16.76 24.58 18.12 23.22 19.8 23.22C20.1 23.22 20.38 23.27 20.64 23.36V19.79C20.37 19.74 20.09 19.71 19.8 19.71C16.18 19.71 13.25 22.64 13.25 26.26C13.25 29.88 16.18 32.81 19.8 32.81C23.42 32.81 26.35 29.88 26.35 26.26V16.3C27.56 17.27 29.11 17.86 30.79 17.86V14.35C28.53 14.35 26.62 12.72 26.2 10.5H22.84Z" fill="white"/>
+                    </svg>
+                </a>
+                <a href="#" aria-label="ไปที่หน้า Facebook ของ JobNble">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black"/>
+                        <path d="M25.75 22H22.5V34H17.5V22H15V17.5H17.5V14.25C17.5 11.16 19.16 9.5 22.5 9.5H26.25V14H23.75C22.37 14 22.5 14.81 22.5 15.62V17.5H26.25L25.75 22Z" fill="white"/>
+                    </svg>
+                </a>
+                <a href="#" aria-label="ไปที่หน้า Instagram ของ JobNble">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16 10H28C31.3137 10 34 12.6863 34 16V28C34 31.3137 31.3137 34 28 34H16C12.6863 34 10 31.3137 10 28V16C10 12.6863 12.6863 10 16 10ZM16 12.5C14.067 12.5 12.5 14.067 12.5 16V28C12.5 29.933 14.067 31.5 16 31.5H28C29.933 31.5 31.5 29.933 31.5 28V16C31.5 14.067 29.933 12.5 28 12.5H16ZM22 17C19.2386 17 17 19.2386 17 22C17 24.7614 19.2386 27 22 27C24.7614 27 27 24.7614 27 22C27 19.2386 24.7614 17 22 17ZM19.5 22C19.5 20.6193 20.6193 19.5 22 19.5C23.3807 19.5 24.5 20.6193 24.5 22C24.5 23.3807 23.3807 24.5 22 24.5C20.6193 24.5 19.5 23.3807 19.5 22ZM28.5 16.5C28.5 17.0523 28.0523 17.5 27.5 17.5C26.9477 17.5 26.5 17.0523 26.5 16.5C26.5 15.9477 26.9477 15.5 27.5 15.5C28.0523 15.5 28.5 15.9477 28.5 16.5Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="footer-feedback">
+                <input type="text" placeholder="แสดงความคิดเห็น" class="feedback-input" aria-label="ช่องกรอกความคิดเห็นเพื่อส่ง Feedback">
+                <button class="feedback-btn" aria-label="ส่งความคิดเห็น">ส่ง</button>
+            </div>
+            
+        </div>
+
+        <div class="footer-copyright">
+            © 2026 JobNble — Digital Platform for Inclusive Employment Opportunities. Accessibility Statement • Terms & Conditions • Privacy Policy • Contact Support
+        </div>
+    </footer>
+
+</body>
+</html>

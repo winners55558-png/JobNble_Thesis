@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobNble - สร้างเรซูเม่</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="logo-container">
+            <a href="index.html" aria-label="กลับสู่หน้าแรก JobNble">
+                <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
+            </a>
+        </div>
+
+        <nav class="navbar" aria-label="เมนูนำทางหลัก">
+            <ul class="main-nav">
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        นายจ้าง
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="employer-profile.html">โปรไฟล์</a></li>
+                        <li><a href="home-employer.html">หน้าหลัก</a></li>
+                        <li><a href="post-job.html">โพสต์ประกาศงาน</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        ผู้หางาน
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="jobseeker-profile.html">โปรไฟล์</a></li>
+                        <li><a href="home-jobseeker.html">หน้าหลัก</a></li>
+                        <li><a href="resume.html">สร้างเรซูเม่</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false">
+                        เกี่ยวกับเรา
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="about-vision.html">วิสัยทัศน์</a></li>
+                        <li><a href="about-team.html">ทีมงาน</a></li>
+                        <li><a href="contact.html">ติดต่อเรา</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item user-profile-item">
+                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false">
+                        <div class="user-avatar">ม</div> 
+                        <span class="user-name">มาวิน</span> 
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu user-dropdown">
+                        <li><a href="index.html">ออกจากระบบ</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="resume-page-main">
+        <div class="resume-wrapper">
+            <h1 class="resume-page-title">สร้างเรซูเม่ของคุณ</h1>
+            
+            <form id="resume-builder-form">
+                
+                <div class="resume-card">
+                    <h2 class="resume-card-title">1. ข้อมูลส่วนตัว</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">ชื่อ</label>
+                            <input type="text" class="form-input" placeholder="ชื่อจริง" required>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">นามสกุล</label>
+                            <input type="text" class="form-input" placeholder="นามสกุล" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">วัน/เดือน/ปีเกิด (พ.ศ.)</label>
+                            <div class="dob-group">
+                                <select id="dob-day" class="form-input custom-select dob-select" required>
+                                    <option value="" disabled selected hidden>วัน</option>
+                                    </select>
+                                <select id="dob-month" class="form-input custom-select dob-select" required>
+                                    <option value="" disabled selected hidden>เดือน</option>
+                                    </select>
+                                <select id="dob-year" class="form-input custom-select dob-select" required>
+                                    <option value="" disabled selected hidden>ปี พ.ศ.</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">เบอร์โทรศัพท์</label>
+                            <input type="tel" class="form-input" placeholder="08X-XXX-XXXX" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">อีเมล</label>
+                            <input type="email" class="form-input" placeholder="example@email.com" required>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">อัปโหลดรูปถ่าย</label>
+                            <label class="file-upload-wrapper">
+                                <input type="file" class="file-input-hidden" accept="image/*">
+                                <div class="file-upload-display">
+                                    <span class="file-name-text">แนบรูปถ่าย...</span>
+                                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col full-width">
+                            <label class="form-label">ที่อยู่ (พิมพ์เฉพาะบ้านเลขที่, หมู่, หมู่บ้าน, ซอย, ถนน)</label>
+                            <input type="text" class="form-input" placeholder="เช่น 99/9 หมู่บ้านสุขสันต์ ซอย 5 ถนนพระราม 2">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">จังหวัด</label>
+                            <select id="addr-province" class="form-input custom-select" required>
+                                <option value="" disabled selected hidden>เลือกจังหวัด</option>
+                                </select>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">เขต/อำเภอ</label>
+                            <select id="addr-district" class="form-input custom-select" disabled required>
+                                <option value="" disabled selected hidden>เลือกเขต/อำเภอ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">แขวง/ตำบล</label>
+                            <select id="addr-subdistrict" class="form-input custom-select" disabled required>
+                                <option value="" disabled selected hidden>เลือกแขวง/ตำบล</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">รหัสไปรษณีย์</label>
+                            <input type="text" id="addr-zipcode" class="form-input readonly-input" placeholder="อัตโนมัติ" readonly>
+                        </div>
+                    </div>
+
+                    <hr class="card-divider">
+
+                    <h3 class="resume-sub-title">ข้อมูลความพิการ</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">ประเภทความพิการหลัก</label>
+                            <select class="form-input custom-select" required>
+                                <option value="" disabled selected hidden>เลือกประเภท</option>
+                                <option value="visual">ทางการเห็น</option>
+                                <option value="hearing">ทางการได้ยินหรือสื่อความหมาย</option>
+                                <option value="physical">ทางการเคลื่อนไหวหรือทางร่างกาย</option>
+                                <option value="mental">ทางจิตใจหรือพฤติกรรม</option>
+                                <option value="intellectual">ทางสติปัญญา</option>
+                                <option value="learning">ทางการเรียนรู้</option>
+                                <option value="autism">ทางออทิสติก</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">ระดับความช่วยเหลือ / อุปกรณ์ที่ใช้</label>
+                            <select class="form-input custom-select" required>
+                                <option value="" disabled selected hidden>เลือกระดับความช่วยเหลือ</option>
+                                <option value="independent">ดูแลตัวเองได้ปกติ ไม่ต้องใช้อุปกรณ์</option>
+                                <option value="wheelchair">ต้องใช้รถเข็น (Wheelchair)</option>
+                                <option value="cane">ต้องใช้ไม้ค้ำยัน / เครื่องช่วยเดิน</option>
+                                <option value="hearing_aid">ใช้เครื่องช่วยฟัง</option>
+                                <option value="sign_language">สื่อสารด้วยภาษามือเป็นหลัก</option>
+                                <option value="other">อื่นๆ (โปรดระบุในส่วนแนะนำตัว)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-card">
+                    <h2 class="resume-card-title">2. แรงบันดาลใจและสิ่งที่อยากบอกองค์กร</h2>
+                    <p class="card-hint">เล่าถึงความมุ่งมั่น ทัศนคติในการทำงาน หรือเป้าหมายของคุณ เพื่อให้องค์กรได้รู้จักตัวตนของคุณมากขึ้น</p>
+                    <textarea class="resume-textarea" rows="4" placeholder="ฉันมีความมุ่งมั่นที่จะนำทักษะด้าน... มาช่วยพัฒนาองค์กร และเชื่อว่าความหลากหลายจะช่วยสร้างสรรค์สิ่งใหม่ๆ ได้..."></textarea>
+                </div>
+
+                <div class="resume-card">
+                    <h2 class="resume-card-title">3. ประวัติการศึกษา</h2>
+                    <div id="education-container">
+                        <div class="dynamic-item">
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label class="form-label">ระดับการศึกษา</label>
+                                    <select class="form-input custom-select">
+                                        <option>มัธยมศึกษาตอนปลาย / ปวช.</option>
+                                        <option>ปวส.</option>
+                                        <option selected>ปริญญาตรี</option>
+                                        <option>ปริญญาโท</option>
+                                    </select>
+                                </div>
+                                <div class="form-col">
+                                    <label class="form-label">ชื่อสถาบันการศึกษา</label>
+                                    <input type="text" class="form-input" placeholder="เช่น มหาวิทยาลัย...">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label class="form-label">คณะ / สาขาวิชา</label>
+                                    <input type="text" class="form-input" placeholder="เช่น บริหารธุรกิจ">
+                                </div>
+                                <div class="form-col">
+                                    <label class="form-label">เกรดเฉลี่ย (GPA)</label>
+                                    <input type="text" class="form-input" placeholder="เช่น 3.50">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-more" id="add-edu-btn">+ เพิ่มประวัติการศึกษา</button>
+                </div>
+
+                <div class="resume-card">
+                    <h2 class="resume-card-title">4. ประสบการณ์และกิจกรรม</h2>
+                    
+                    <h3 class="resume-sub-title">ประสบการณ์ทำงาน (ถ้ามี)</h3>
+                    <div id="work-container"></div>
+                    <button type="button" class="btn-add-more" id="add-work-btn">+ เพิ่มประสบการณ์ทำงาน</button>
+
+                    <hr class="card-divider">
+
+                    <h3 class="resume-sub-title">ประสบการณ์ฝึกงาน (ถ้ามี)</h3>
+                    <div id="intern-container"></div>
+                    <button type="button" class="btn-add-more" id="add-intern-btn">+ เพิ่มประสบการณ์ฝึกงาน</button>
+
+                    <hr class="card-divider">
+
+                    <h3 class="resume-sub-title">กิจกรรม และ การแข่งขัน (ถ้ามี)</h3>
+                    <div id="activity-container"></div>
+                    <button type="button" class="btn-add-more" id="add-activity-btn">+ เพิ่มกิจกรรม</button>
+                </div>
+
+                <div class="resume-card">
+                    <h2 class="resume-card-title">5. ทักษะความสามารถ (Skills)</h2>
+                    <p class="card-hint">คลิกเลือกทักษะที่คุณถนัด (เลือกได้มากกว่า 1 ข้อ)</p>
+                    
+                    <h3 class="resume-sub-title small-title">โปรแกรมและคอมพิวเตอร์</h3>
+                    <div class="skills-group">
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Microsoft Word</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Microsoft Excel</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">PowerPoint</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Adobe Photoshop</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Adobe Illustrator</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Canva</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">Video Editing</span></label>
+                    </div>
+
+                    <h3 class="resume-sub-title small-title" style="margin-top: 20px;">ทักษะทางภาษา</h3>
+                    <div class="skills-group">
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">ภาษาอังกฤษ (สื่อสารได้)</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">ภาษาอังกฤษ (ดีเยี่ยม)</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">ภาษาจีน</span></label>
+                        <label class="skill-tag-wrapper"><input type="checkbox" class="skill-checkbox"><span class="skill-tag">ภาษาญี่ปุ่น</span></label>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 30px;">
+                        <div class="form-col full-width">
+                            <label class="form-label">ทักษะอื่นๆ (พิมพ์เพิ่มเติม)</label>
+                            <input type="text" class="form-input" placeholder="เช่น ทักษะการเจรจาต่อรอง, พิมพ์ดีดเร็ว 50 คำ/นาที">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-card">
+                    <h2 class="resume-card-title">6. แฟ้มผลงาน (Portfolio)</h2>
+                    <p class="card-hint">แนบผลงานเพื่อเพิ่มความน่าสนใจให้โปรไฟล์ของคุณ</p>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="form-label">อัปโหลดไฟล์ PDF (ขนาดไม่เกิน 5MB)</label>
+                            <label class="file-upload-wrapper">
+                                <input type="file" class="file-input-hidden" accept=".pdf">
+                                <div class="file-upload-display">
+                                    <span class="file-name-text">แนบไฟล์ PDF...</span>
+                                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-col">
+                            <label class="form-label">หรือแนบลิงก์ผลงาน (URL)</label>
+                            <input type="url" class="form-input" placeholder="เช่น ลิงก์ Google Drive หรือเว็บไซต์ผลงาน">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-submit-wrapper">
+                    <button type="submit" class="btn-submit-resume">บันทึกและสร้างเรซูเม่</button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="modal-overlay" id="resume-success-modal">
+            <div class="modal-content">
+                <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="#013c58" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <h3 class="modal-text">สร้างเรซูเม่สำเร็จ!</h3>
+                <p style="margin-top: 10px; color: #333;">ระบบกำลังวิเคราะห์ข้อมูลเพื่อจับคู่งานที่ใช่สำหรับคุณ</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="TikTok">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black" />
+                        <path d="M22.84 10.5V26.26C22.84 27.94 21.48 29.3 19.8 29.3C18.12 29.3 16.76 27.94 16.76 26.26C16.76 24.58 18.12 23.22 19.8 23.22C20.1 23.22 20.38 23.27 20.64 23.36V19.79C20.37 19.74 20.09 19.71 19.8 19.71C16.18 19.71 13.25 22.64 13.25 26.26C13.25 29.88 16.18 32.81 19.8 32.81C23.42 32.81 26.35 29.88 26.35 26.26V16.3C27.56 17.27 29.11 17.86 30.79 17.86V14.35C28.53 14.35 26.62 12.72 26.2 10.5H22.84Z" fill="white" />
+                    </svg>
+                </a>
+                <a href="#" aria-label="Facebook">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black" />
+                        <path d="M25.75 22H22.5V34H17.5V22H15V17.5H17.5V14.25C17.5 11.16 19.16 9.5 22.5 9.5H26.25V14H23.75C22.37 14 22.5 14.81 22.5 15.62V17.5H26.25L25.75 22Z" fill="white" />
+                    </svg>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="8" fill="black" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16 10H28C31.3137 10 34 12.6863 34 16V28C34 31.3137 31.3137 34 28 34H16C12.6863 34 10 31.3137 10 28V16C10 12.6863 12.6863 10 16 10ZM16 12.5C14.067 12.5 12.5 14.067 12.5 16V28C12.5 29.933 14.067 31.5 16 31.5H28C29.933 31.5 31.5 29.933 31.5 28V16C31.5 14.067 29.933 12.5 28 12.5H16ZM22 17C19.2386 17 17 19.2386 17 22C17 24.7614 19.2386 27 22 27C24.7614 27 27 24.7614 27 22C27 19.2386 24.7614 17 22 17ZM19.5 22C19.5 20.6193 20.6193 19.5 22 19.5C23.3807 19.5 24.5 20.6193 24.5 22C24.5 23.3807 23.3807 24.5 22 24.5C20.6193 24.5 19.5 23.3807 19.5 22ZM28.5 16.5C28.5 17.0523 28.0523 17.5 27.5 17.5C26.9477 17.5 26.5 17.0523 26.5 16.5C26.5 15.9477 26.9477 15.5 27.5 15.5C28.0523 15.5 28.5 15.9477 28.5 16.5Z" fill="white" />
+                    </svg>
+                </a>
+            </div>
+            <div class="footer-feedback">
+                <input type="text" placeholder="แสดงความคิดเห็น" class="feedback-input">
+                <button class="feedback-btn">ส่ง</button>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            © 2026 JobNble — Digital Platform for Inclusive Employment Opportunities. Accessibility Statement • Terms & Conditions • Privacy Policy • Contact Support
+        </div>
+    </footer>
+
+</body>
+</html>
