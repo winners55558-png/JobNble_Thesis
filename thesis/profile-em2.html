@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobNble - home-employer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="site-header" role="banner">
+        
+        <nav class="navbar" aria-label="เมนูนำทางหลัก" role="navigation">
+            
+            <div class="logo-container">
+                <a href="Index.html" aria-label="กลับสู่หน้าแรก JobNble">
+                    <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
+                </a>
+            </div>
+
+            <ul class="main-nav" role="menubar">
+                
+                <li class="nav-item" role="none">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="employer-menu" aria-label="เมนูสำหรับนายจ้าง">
+                        นายจ้าง
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="employer-menu" role="menu">
+                        <li role="none"><a role="menuitem" href="home-employer.html">หน้าหลักนายจ้าง</a></li>
+                        <li role="none"><a role="menuitem" href="post-employer.html">โพสต์ประกาศงาน</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" role="none">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="jobseeker-menu" aria-label="เมนูสำหรับผู้หางาน">
+                        ผู้หางาน
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                </li>
+
+                <li class="nav-item" role="none">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="about-menu" aria-label="เมนูเกี่ยวกับเรา">
+                        เกี่ยวกับเรา
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="about-menu" role="menu">
+                        <li role="none"><a role="menuitem" href="contact.html">ติดต่อเรา</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item user-profile-item" role="none">
+                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="เมนูโปรไฟล์ของ จ๊อบ">
+                        <div class="user-avatar" aria-hidden="true">จ</div> 
+                    </button>
+                    <ul class="dropdown-menu user-dropdown" id="user-menu" role="menu">
+                        <li role="none"><a role="menuitem" href="Index.html">ออกจากระบบ</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-page-main" id="main-content">
+        <div class="profile-container">
+            <div class="profile-box files-box">
+                
+                <div class="files-header" style="display: flex; align-items: center; padding-left: 30px; padding-right: 30px;">
+                    <a href="profile-em.html" class="back-link-icon" aria-label="กลับไปหน้าโปรไฟล์นายจ้าง">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </a>
+                    
+                    <h2 style="flex: 1; text-align: center; margin-right: 40px;">เรซูเม่ที่ถูกส่งเข้ามา</h2>
+                </div>
+                
+                <div class="files-list">
+                    <div class="file-item applicant-item">
+                        <a href="profile-em3.html" class="file-name">มาวิน ดำขำ</a>
+                        <div class="file-date">28/3/2568</div>
+                        <div class="file-time">17:08</div>
+                    </div>
+
+                    <div class="file-item applicant-item">
+                        <a href="profile-em3.html" class="file-name">สมหญิง จริงใจ</a>
+                        <div class="file-date">29/3/2568</div>
+                        <div class="file-time">09:15</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-copyright" style="margin-top: 20px;">
+            © 2026 JobNble — Digital Platform for Inclusive Employment Opportunities.
+        </div>
+    </footer>
+
+</body>
+</html>

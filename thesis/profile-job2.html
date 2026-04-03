@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobNble - พรีวิวเรซูเม่</title>
+    <title>JobNble - สร้างเรซูเม่</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-
 <body>
 
     <header class="site-header" role="banner">
@@ -20,23 +19,12 @@
         <nav class="navbar" aria-label="เมนูนำทางหลัก" role="navigation">
             
             <div class="logo-container">
-                <a href="home.html" aria-label="กลับสู่หน้าแรก JobNble">
+                <a href="Index.html" aria-label="กลับสู่หน้าแรก JobNble">
                     <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
                 </a>
             </div>
 
             <ul class="main-nav" role="menubar">
-                
-                <li class="nav-item" role="none">
-                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="employer-menu" aria-label="เมนูสำหรับนายจ้าง">
-                        นายจ้าง
-                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
-                    <ul class="dropdown-menu" id="employer-menu" role="menu">
-                        <li role="none"><a role="menuitem" href="home-employer.html">หน้าหลักนายจ้าง</a></li>
-                        <li role="none"><a role="menuitem" href="post-employer.html">โพสต์ประกาศงาน</a></li>
-                    </ul>
-                </li>
 
                 <li class="nav-item" role="none">
                     <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="jobseeker-menu" aria-label="เมนูสำหรับผู้หางาน">
@@ -60,8 +48,8 @@
                 </li>
 
                 <li class="nav-item user-profile-item" role="none">
-                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="เมนูโปรไฟล์ของผู้ใช้">
-                        <div class="user-avatar" aria-hidden="true">U</div> 
+                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="เมนูโปรไฟล์ของ มาวิน">
+                        <div class="user-avatar" aria-hidden="true">ม</div> 
                     </button>
                     <ul class="dropdown-menu user-dropdown" id="user-menu" role="menu">
                         <li role="none"><a role="menuitem" href="Index.html">ออกจากระบบ</a></li>
@@ -71,16 +59,26 @@
         </nav>
     </header>
 
-    <main class="resume3-layout" id="main-content" aria-labelledby="resume3-title">
-        
-        <h1 class="resume-page-title" id="resume3-title" style="margin-bottom: 20px;">พรีวิวเรซูเม่ของคุณ</h1>
-        
+
+
+<main class="resume3-layout" id="main-content" aria-labelledby="resume3-title">
+    
+        <div style="width: 100%; max-width: 800px; margin: 0 auto 10px auto; display: flex; justify-content: flex-start; align-items: center;">
+            <a href="profile-job.html" class="file-name" aria-label="กลับไปหน้าโปรไฟล์" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E293B; font-weight: 500; font-size: 18px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>กลับไปหน้าโปรไฟล์</span>
+            </a>
+        </div>
+
         <div class="preview-paper" id="resume3-paper" role="region" aria-label="พื้นที่แสดงตัวอย่างเรซูเม่">
             
             <div class="resume-theme-content" id="tpl-minimal">
                 <div class="tpl1-left">
                     <div class="tpl1-photo" role="img" aria-label="รูปโปรไฟล์ของผู้ใช้"></div>
-                    <h1 class="tpl1-name render-name">กำลังโหลด<br>ข้อมูล...</h1>
+                    <h1 class="tpl1-name render-name"></h1>
                     <h2 class="tpl1-job">ผู้สมัครงาน</h2>
                     
                     <h3 class="tpl1-title" style="margin-top: 50px;">ข้อมูลติดต่อ</h3>
@@ -134,7 +132,7 @@
                 </div>
                 <div class="tpl2-right">
                     <div>
-                        <h1 class="tpl2-name render-name">กำลังโหลดข้อมูล...</h1>
+                        <h1 class="tpl2-name render-name"></h1>
                         <h2 class="tpl2-job">ผู้สมัครงาน</h2>
                     </div>
                     <div>
@@ -166,7 +164,7 @@
 
             <div class="resume-theme-content" id="tpl-vintage">
                 <div class="tpl3-header-top">
-                    <h1 class="tpl3-name render-name">กำลังโหลดข้อมูล...</h1>
+                    <h1 class="tpl3-name render-name"></h1>
                     <div class="tpl3-contact-box">
                         <p><span aria-hidden="true">📧</span> <span class="render-email">-</span></p>
                         <p><span aria-hidden="true">📞</span> <span class="render-phone">-</span></p>
@@ -205,7 +203,7 @@
                     <div class="tpl4-photo-circle" role="img" aria-label="รูปโปรไฟล์ของผู้ใช้"></div>
                     <div class="tpl4-top-info">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h1 class="tpl4-name render-name">กำลังโหลดข้อมูล...</h1>
+                            <h1 class="tpl4-name render-name"></h1>
                             <span class="tpl4-job">ผู้สมัครงาน</span>
                         </div>
                         <div class="tpl4-contact">
@@ -239,16 +237,14 @@
                 </div>
             </div>
             
-        </div> <div class="resume3-actions" role="group" aria-label="เมนูจัดการเรซูเม่" style="margin-top: 40px; display: flex; justify-content: center; gap: 20px; padding-bottom: 40px;">
-            <button type="button" class="btn-action btn-outline" id="btn-edit-resume" aria-label="กลับไปแก้ไขเรซูเม่">แก้ไข</button>
-            <button type="button" class="btn-action btn-primary" id="btn-save-profile" aria-label="จับคู่งาน">จับคู่งาน</button>
-        </div>
 
     </main>
 
-   
 
-<footer class="site-footer" role="contentinfo">
+
+
+
+    <footer class="site-footer" role="contentinfo">
         <div class="footer-content">
             
             <div class="footer-socials">

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobNble - โปรไฟล์ของฉัน</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="site-header" role="banner">
+        
+        <nav class="navbar" aria-label="เมนูนำทางหลัก" role="navigation">
+            
+            <div class="logo-container">
+                <a href="Index.html" aria-label="กลับสู่หน้าแรก JobNble">
+                    <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
+                </a>
+            </div>
+
+            <ul class="main-nav" role="menubar">
+
+                <li class="nav-item" role="none">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="jobseeker-menu" aria-label="เมนูสำหรับผู้หางาน">
+                        ผู้หางาน
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="jobseeker-menu" role="menu">
+                        <li role="none"><a role="menuitem" href="home-jobseeker.html">หน้าหลักผู้หางาน</a></li>
+                        <li role="none"><a role="menuitem" href="resume.html">สร้างเรซูเม่</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" role="none">
+                    <button class="nav-link-btn" aria-haspopup="true" aria-expanded="false" aria-controls="about-menu" aria-label="เมนูเกี่ยวกับเรา">
+                        เกี่ยวกับเรา
+                        <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <ul class="dropdown-menu" id="about-menu" role="menu">
+                        <li role="none"><a role="menuitem" href="contact.html">ติดต่อเรา</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item user-profile-item last-item" role="none">
+                    </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-page-main" id="profile-content-area">
+        <h1 class="profile-page-title">โปรไฟล์</h1>
+        
+        <div class="profile-container">
+            <div class="profile-box">
+                <div class="profile-info-grid">
+                    <div class="info-label">ชื่อ-นามสกุล</div>
+                    <div class="info-value" id="prof-name" style="font-weight: 600;">กำลังโหลด...</div>
+                    
+                    <div class="info-label">อีเมล</div>
+                    <div class="info-value" id="prof-email">กำลังโหลด...</div>
+                    
+                    <div class="info-label">เบอร์โทรศัพท์</div>
+                    <div class="info-value" id="prof-phone">กำลังโหลด...</div>
+
+                    <div class="info-label">ที่อยู่</div>
+                    <div class="info-value" id="prof-address">กำลังโหลด...</div>
+                </div>
+                
+        
+            </div>
+
+            <div class="profile-box files-box" id="seeker-resume-section" style="display: none;">
+                <div class="files-header">
+                    <h2>ไฟล์เรซูเม่ของฉัน</h2>
+                </div>
+                
+                <div class="files-list">
+                    <div class="file-item employer-item" id="resume-file-box">
+                        <a href="profile-job2.html" class="file-name" id="resume-file-name" style="color: #013c58; font-weight: 600; text-decoration: underline;">กำลังโหลด...</a>
+                        
+                        <div class="file-date" id="resume-file-date" style="color: #4B5563;">กำลังโหลด...</div>
+                        
+                        <div class="action-menu-container">
+                            <button class="file-menu-btn" aria-label="ตัวเลือกจัดการไฟล์" aria-haspopup="true" aria-expanded="false">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="1.5"></circle>
+                                    <circle cx="19" cy="12" r="1.5"></circle>
+                                    <circle cx="5" cy="12" r="1.5"></circle>
+                                </svg>
+                            </button>
+                            
+                            <ul class="action-dropdown" role="menu">
+                                <li role="none"><a role="menuitem" href="profile-job2.html?export=pdf" class="edit-action">ดาวน์โหลด PDF</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-socials">
+                <a href="#" aria-label="ติดตาม JobNble บน TikTok">...</a>
+            </div>
+            <div class="footer-feedback">
+                <label for="feedback-input" class="sr-only">แสดงความคิดเห็นของคุณ</label>
+                <input type="text" id="feedback-input" placeholder="แสดงความคิดเห็น" class="feedback-input">
+                <button class="feedback-btn" aria-label="ส่งความคิดเห็น">ส่ง</button>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            © 2026 JobNble — Digital Platform for Inclusive Employment Opportunities. 
+        </div>
+    </footer>
+
+</body>
+</html>

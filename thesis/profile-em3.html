@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobNble - พรีวิวเรซูเม่</title>
+    <title>JobNble - home-employer</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-
 <body>
 
     <header class="site-header" role="banner">
@@ -20,7 +19,7 @@
         <nav class="navbar" aria-label="เมนูนำทางหลัก" role="navigation">
             
             <div class="logo-container">
-                <a href="home.html" aria-label="กลับสู่หน้าแรก JobNble">
+                <a href="Index.html" aria-label="กลับสู่หน้าแรก JobNble">
                     <img src="Logo-JobNble.png" alt="โลโก้แพลตฟอร์ม JobNble">
                 </a>
             </div>
@@ -43,10 +42,6 @@
                         ผู้หางาน
                         <svg class="dropdown-arrow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <ul class="dropdown-menu" id="jobseeker-menu" role="menu">
-                        <li role="none"><a role="menuitem" href="home-jobseeker.html">หน้าหลักผู้หางาน</a></li>
-                        <li role="none"><a role="menuitem" href="resume.html">สร้างเรซูเม่</a></li>
-                    </ul>
                 </li>
 
                 <li class="nav-item" role="none">
@@ -60,8 +55,8 @@
                 </li>
 
                 <li class="nav-item user-profile-item" role="none">
-                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="เมนูโปรไฟล์ของผู้ใช้">
-                        <div class="user-avatar" aria-hidden="true">U</div> 
+                    <button class="nav-link-btn user-profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu" aria-label="เมนูโปรไฟล์ของ จ๊อบ">
+                        <div class="user-avatar" aria-hidden="true">จ</div> 
                     </button>
                     <ul class="dropdown-menu user-dropdown" id="user-menu" role="menu">
                         <li role="none"><a role="menuitem" href="Index.html">ออกจากระบบ</a></li>
@@ -71,9 +66,19 @@
         </nav>
     </header>
 
-    <main class="resume3-layout" id="main-content" aria-labelledby="resume3-title">
+
+<main class="resume3-layout" id="main-content" aria-labelledby="resume3-title">
         
-        <h1 class="resume-page-title" id="resume3-title" style="margin-bottom: 20px;">พรีวิวเรซูเม่ของคุณ</h1>
+        <div style="width: 100%; max-width: 800px; margin: 0 auto 10px auto; display: flex; justify-content: flex-start; align-items: center;">
+            <a href="profile-em2.html" class="file-name" aria-label="กลับไปหน้าเรซูเม่ที่ถูกส่งเข้ามา" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E293B; font-weight: 500; font-size: 18px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>กลับไปหน้าเรซูเม่ที่ถูกส่งเข้ามา</span>
+            </a>
+        </div>
+        
         
         <div class="preview-paper" id="resume3-paper" role="region" aria-label="พื้นที่แสดงตัวอย่างเรซูเม่">
             
@@ -239,16 +244,15 @@
                 </div>
             </div>
             
-        </div> <div class="resume3-actions" role="group" aria-label="เมนูจัดการเรซูเม่" style="margin-top: 40px; display: flex; justify-content: center; gap: 20px; padding-bottom: 40px;">
-            <button type="button" class="btn-action btn-outline" id="btn-edit-resume" aria-label="กลับไปแก้ไขเรซูเม่">แก้ไข</button>
-            <button type="button" class="btn-action btn-primary" id="btn-save-profile" aria-label="จับคู่งาน">จับคู่งาน</button>
-        </div>
 
     </main>
 
-   
 
-<footer class="site-footer" role="contentinfo">
+
+
+
+
+    <footer class="site-footer" role="contentinfo">
         <div class="footer-content">
             
             <div class="footer-socials">
