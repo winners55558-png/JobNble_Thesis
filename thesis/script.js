@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.clear(); 
                 localStorage.removeItem('user'); 
                 sessionStorage.removeItem('tempResumeData');
+                sessionStorage.removeItem('existingProfilePic'); // ล้างความจำรูปภาพ
                 announce('ออกจากระบบแล้ว');
                 window.location.href = 'index.html'; 
             });
@@ -391,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 🌟 7. ระบบโปรไฟล์ผู้ใช้งาน (profile-job.html & profile-em.html)
+    // 🌟 7. ระบบโปรไฟล์ผู้ใช้งาน (อัปเดตระบบลบและโหลด PDF)
     // ==========================================
     const profileArea = document.getElementById('profile-content-area');
     if(profileArea && loggedInId) {
@@ -417,20 +418,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
 
-                    // 🟢 โค้ดส่วนโชว์/ซ่อน ไฟล์เรซูเม่ (แสดงชื่อ + วันที่)
                     const seekerResumeSection = document.getElementById('seeker-resume-section');
                     if (seekerResumeSection) {
                         if (data.selected_template || (data.address && data.address.trim() !== '')) {
-                            // เคยทำเรซูเม่แล้ว -> ยกเลิกซ่อน
                             seekerResumeSection.style.display = 'block';
                             
-                            // 1. ใส่ชื่อ - นามสกุลตรงปุ่มลิงก์
                             const fileNameEl = document.getElementById('resume-file-name');
                             if (fileNameEl) {
                                 fileNameEl.textContent = data.first_name + ' ' + data.last_name;
                             }
                             
-                            // 2. ดึงวันที่บันทึกมาแสดง (ถ้าไม่มีจะใช้วันที่ปัจจุบัน)
                             let dateText = '-';
                             if (data.updated_at || data.created_at) {
                                 const d = new Date(data.updated_at || data.created_at);
@@ -441,8 +438,51 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                             setEl('resume-file-date', `${dateText}`);
 
+                            const fileMenuBtn = document.querySelector('.file-menu-btn');
+                            const actionDropdown = document.querySelector('.action-dropdown');
+                            const btnDownload = document.getElementById('btn-download-pdf');
+                            const btnDelete = document.getElementById('btn-delete-resume');
+
+                            if (fileMenuBtn && actionDropdown) {
+                                fileMenuBtn.addEventListener('click', (e) => {
+                                    e.stopPropagation();
+                                    const isExpanded = fileMenuBtn.getAttribute('aria-expanded') === 'true';
+                                    fileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+                                    actionDropdown.classList.toggle('show');
+                                });
+                                document.addEventListener('click', () => {
+                                    fileMenuBtn.setAttribute('aria-expanded', 'false');
+                                    actionDropdown.classList.remove('show');
+                                });
+                            }
+
+                            if (btnDownload) {
+                                btnDownload.addEventListener('click', () => {
+                                    window.location.href = 'profile-job2.html?export=pdf';
+                                });
+                            }
+
+                            if (btnDelete) {
+                                btnDelete.addEventListener('click', async () => {
+                                    if (confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบเรซูเม่นี้? ข้อมูลจะไม่สามารถกู้คืนได้')) {
+                                        try {
+                                            const res = await fetch(`http://localhost:3000/api/delete-resume/${loggedInId}`, { method: 'DELETE' });
+                                            const result = await res.json();
+                                            if (result.success) {
+                                                alert('ลบเรซูเม่เรียบร้อยแล้ว');
+                                                sessionStorage.removeItem('tempResumeData');
+                                                window.location.reload(); 
+                                            } else {
+                                                alert('❌ ' + result.message);
+                                            }
+                                        } catch (error) {
+                                            alert('⚠️ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+                                        }
+                                    }
+                                });
+                            }
+
                         } else {
-                            // ยังไม่เคยทำ -> ซ่อนกล่องไปเลย
                             seekerResumeSection.style.display = 'none';
                         }
                     }
@@ -456,6 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setEl('prof-name', data.company_name);
                     setEl('prof-email', data.email);
                     setEl('prof-phone', data.phone);
+                    setEl('prof-address', data.address || 'ยังไม่ได้ระบุที่อยู่');
                 }
             }).catch(err => console.error("Error loading employer profile:", err));
 
@@ -503,8 +544,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 🌟 8. ระบบ AI Auto-Replace 
     // ==========================================
-    const summaryInput = document.querySelector('.resume-textarea') || document.getElementById('inspiration-text'); 
-    const skillsInput = document.querySelector('input[placeholder="เช่น ทักษะการเจรจาต่อรอง, พิมพ์ดีดเร็ว 50 คำ/นาที"]') || document.getElementById('other-skills');
+    const summaryInput = document.getElementById('inspiration-text'); 
+    const skillsInput = document.getElementById('other-skills');
     
     async function processAIAutoReplace(targetElement, sectionName) {
         if (!targetElement.value || targetElement.value.length < 5) return;
@@ -541,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // --- 9. หน้าฟอร์มกรอกเรซูเม่ (resume.html) ---
+    // --- 9. หน้าฟอร์มกรอกเรซูเม่ (อัปเดตดึงรูปลงเครื่อง) ---
     // ==========================================
     const getVal = (id, selector) => {
         const el = document.getElementById(id) || document.querySelector(selector);
@@ -554,6 +595,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(data => {
                 if (data && data.first_name) {
+                    // 🌟 ถ้าระบบเจอรูปเก่าที่เคยอัปไว้ ให้จำไว้ใน Session เผื่อว่ารอบนี้ยูสเซอร์ไม่ได้อัปใหม่
+                    if (data.profile_pic) {
+                        sessionStorage.setItem('existingProfilePic', data.profile_pic);
+                        const displaySpan = document.querySelector('.file-name-text');
+                        if (displaySpan) {
+                            displaySpan.textContent = 'มีรูปถ่ายเดิมในระบบแล้ว (แนบใหม่เพื่อเปลี่ยน)';
+                            displaySpan.style.color = '#17A05D';
+                            displaySpan.style.fontWeight = '600';
+                        }
+                    }
+
                     const sv = (id, selector, value) => {
                         const el = document.getElementById(id) || document.querySelector(selector);
                         if(el) el.value = value || '';
@@ -846,7 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 🟢 9.6 ดักจับการกด Save หน้าแรก -> ให้เก็บใน Session
+    // 🟢 9.6 ดักจับการกด Save หน้าแรก -> ให้เก็บใน Session (อัปเดตรองรับรูปถ่าย)
     if (isOnResumePage) {
         isOnResumePage.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -856,6 +908,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // 🌟 1. ดึงไฟล์รูปถ่ายและแปลงเป็น Base64
+            const fileInput = document.getElementById('profile-pic');
+            let profilePicBase64 = sessionStorage.getItem('existingProfilePic') || ''; // ดึงรูปเก่ามาเผื่อไว้ก่อน
+
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                // ป้องกันอัปไฟล์ใหญ่เกิน 2MB ไม่งั้นเดี๋ยว Session/Database จะ Error
+                if(file.size > 2 * 1024 * 1024) {
+                    alert('ขนาดรูปถ่ายใหญ่เกินไปครับ (ต้องไม่เกิน 2MB)');
+                    return;
+                }
+                
+                profilePicBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 🌟 2. ดึงข้อมูลฟอร์มอื่นๆ ตามปกติ
             const d = document.getElementById('dob-day')?.value; 
             const m = document.getElementById('dob-month')?.value; 
             const y = document.getElementById('dob-year')?.value;
@@ -893,7 +965,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 education_history: getDynamicData('education-container'),
                 work_experience: getDynamicData('work-container'),
                 intern_experience: getDynamicData('intern-container'),
-                activities: getDynamicData('activity-container')
+                activities: getDynamicData('activity-container'),
+                profile_pic: profilePicBase64 // 🌟 ส่งรูปภาพที่แปลงแล้วเข้าไปด้วย
             };
 
             sessionStorage.setItem('tempResumeData', JSON.stringify(resumeData));
@@ -1023,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // --- 11. หน้าพรีวิวเรซูเม่ครั้งสุดท้าย (resume3.html / profile-job2.html) ---
+    // --- 11. หน้าพรีวิวเรซูเม่ครั้งสุดท้าย (อัปเดตการแสดงรูปภาพ) ---
     // ==========================================
     const resume3Paper = document.getElementById('resume3-paper');
 
@@ -1050,16 +1123,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnEdit = document.getElementById('btn-edit-resume');
         const btnSave = document.getElementById('btn-save-profile');
 
-        // ปุ่มกลับไปแก้ไขเรซูเม่
         if (btnEdit) {
             btnEdit.addEventListener('click', () => { 
                 window.location.href = 'resume.html'; 
             });
         }
 
-        // 🌟 ปุ่มจับคู่งาน: แก้ไขให้กดปุ๊บ วิ่งไปหน้า resume4.html ทันที!
         if (btnSave) {
+            btnSave.removeAttribute('onclick'); 
             btnSave.addEventListener('click', () => {
+                sessionStorage.removeItem('aiMatchedJobs'); 
                 window.location.href = 'resume4.html'; 
             });
         }
@@ -1068,6 +1141,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRealDataToTemplate(tpl, data) {
         if (!tpl) return;
         const themeId = tpl.id; 
+
+        // 🌟 เซ็ตพื้นหลังรูปภาพ (ถ้ายูสเซอร์อัปโหลดมา)
+        if (data.profile_pic) {
+            const photoEls = tpl.querySelectorAll('.tpl1-photo, .tpl2-arch-photo, .tpl3-photo, .tpl4-photo-circle');
+            photoEls.forEach(el => {
+                el.style.backgroundImage = `url(${data.profile_pic})`;
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition = 'center';
+            });
+        }
 
         const setText = (selector, text) => {
             const els = tpl.querySelectorAll(selector);
@@ -1155,28 +1238,94 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 🌟 12. ระบบคำนวณ Ranking ขั้นเทพ (Rule-based + AI Matching)
     // ==========================================
-    // แก้ไขชื่อคลาสให้ตรงกับ HTML ของคุณคือ .ranking-list
     const rankListContainer = document.querySelector('.ranking-list'); 
     
     if (rankListContainer) {
-        loadAndRankJobsWithAI();
+        const cachedJobs = sessionStorage.getItem('aiMatchedJobs');
+        if (cachedJobs) {
+            renderRankedJobs(JSON.parse(cachedJobs));
+        } else {
+            loadAndRankJobsWithAI();
+        }
+    }
+
+    function renderRankedJobs(rankedJobs) {
+        rankListContainer.innerHTML = ''; 
+
+        // ปุ่ม Rematch 
+        rankListContainer.innerHTML += `
+            <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <button id="btn-rematch" style="padding: 10px 20px; background-color: #f8fafc; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+                    คำนวณคะแนนใหม่ (Rematch)
+                </button>
+            </div>
+        `;
+
+        const bgColors = ['#000000', '#17A05D', '#00A5E0', '#EE3124', '#E2231A', '#005A9C', '#FF6600', '#0F146D', '#00A651'];
+
+        rankedJobs.forEach((job, index) => {
+            let logoText = job.company_name ? job.company_name.substring(0, 3).toUpperCase() : 'JOB';
+            let bgColor = bgColors[(job.id || 0) % bgColors.length];
+            
+            rankListContainer.innerHTML += `
+                <div class="rank-card" role="listitem" tabindex="0" onclick="window.location.href='resume5.html?jobId=${job.id}'" style="cursor: pointer; position: relative; padding-right: 100px;" aria-label="อันดับ ${index + 1} ${job.company_name} ตำแหน่ง ${job.job_title}">
+                    
+                    <div class="rank-number" aria-hidden="true">${index + 1}</div>
+                    
+                    <div class="rank-logo-placeholder" style="background-color: ${bgColor}; color: white;" aria-hidden="true">${logoText}</div> 
+                    
+                    <div class="rank-company" aria-hidden="true">${job.company_name}</div>
+                    
+                    <div class="rank-position" aria-hidden="true">
+                        <span class="rank-label">ตำแหน่งที่รับ :</span>
+                        <span class="rank-value">${job.job_title}</span>
+                    </div>
+                    
+                    <div class="rank-type" aria-hidden="true">
+                        <span class="rank-label">ประเภทงาน :</span>
+                        <span class="rank-value">${job.job_type || 'ไม่ระบุ'}</span>
+                    </div>
+
+                    <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 65px; height: 65px; border: 3px solid ${bgColor}; border-radius: 50%; background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <span style="color: ${bgColor}; font-size: 20px; font-weight: 800; line-height: 1;">${job.matchScore}</span>
+                        <span style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">/ 100</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        const btnRematch = document.getElementById('btn-rematch');
+        if (btnRematch) {
+            btnRematch.addEventListener('click', () => {
+                sessionStorage.removeItem('aiMatchedJobs');
+                loadAndRankJobsWithAI();
+            });
+        }
+
+        document.querySelectorAll('.rank-card').forEach(card => {
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { 
+                    e.preventDefault(); 
+                    window.location.href = 'resume5.html?jobId=' + card.getAttribute('onclick').match(/'([^']+)'/)[1].split('=')[1]; 
+                }
+            });
+        });
     }
 
     async function loadAndRankJobsWithAI() {
         try {
-            // 1. แสดง Loading State 
             rankListContainer.innerHTML = `
-                <div style="text-align: center; padding: 80px 20px; width: 100%;">
+                <div style="text-align: center; padding: 60px 20px; width: 100%;">
                     <svg class="loading-spinner" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1.5s linear infinite; margin: 0 auto;">
                         <circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path>
                     </svg>
                     <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
-                    <h3 style="color:#ea580c; margin-top:20px; font-size: 24px;">🤖 AI กำลังเปรียบเทียบเรซูเม่ของคุณกับประกาศงาน...</h3>
-                    <p style="color:#666; margin-top:10px; font-size: 16px;">โปรดรอสักครู่ ระบบกำลังประเมินทักษะ ประสบการณ์ และทัศนคติแบบเจาะลึก 100 คะแนน</p>
+                    <h3 style="color:#ea580c; margin-top:20px; font-size: 20px;">🤖 AI กำลังประมวลผลจับคู่งานที่เหมาะสมกับคุณที่สุดทีละรายการ...</h3>
+                    <p style="color:#666; margin-top:10px; font-size: 15px;">อาจใช้เวลาสักครู่นะครับ ระบบกำลังวิเคราะห์ทักษะอย่างละเอียด</p>
                 </div>
             `;
 
-            // 2. ดึงข้อมูลงานทั้งหมด และข้อมูลเรซูเม่ของผู้ใช้ (แก้ไข URL API เป็น /api/jobs)
             const res = await fetch('http://localhost:3000/api/jobs');
             const jobs = await res.json();
             
@@ -1184,32 +1333,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const resumeRes = await fetch(`http://localhost:3000/api/get-resume/${userId}`);
             const resume = await resumeRes.json();
 
-            // 3. เตรียมข้อมูลส่งให้ AI 
             const eduStr = JSON.stringify(resume.education_history || []);
-            const expStr = "ทำงาน: " + JSON.stringify(resume.work_experience || []) + " ฝึกงาน: " + JSON.stringify(resume.intern_experience || []) + " กิจกรรม: " + JSON.stringify(resume.activities || []);
+            const expStr = "ทำงาน: " + JSON.stringify(resume.work_experience || []) + " ฝึกงาน: " + JSON.stringify(resume.intern_experience || []);
             const skillStr = resume.skills || '';
             const inspStr = resume.summary || '';
 
             let rankedJobs = [];
 
-            // 4. วนลูปให้คะแนนทีละงาน
-            await Promise.all(jobs.map(async (job) => {
+            for (const job of jobs) {
                 let ruleScore = 0;
                 let matchDetails = [];
-
-                // 🟢 ส่วนที่ 1: Rule-based Logic (คำนวณโดยระบบ - เต็ม 20 คะแนน)
                 const reqDisType = job.disability_type || '';
                 const myDisType = resume.disability_type || '';
                 
                 if (reqDisType === 'รับทุกประเภท' || reqDisType.includes(myDisType) || (myDisType && reqDisType.includes(myDisType))) {
                     ruleScore = 20; 
-                    matchDetails.push("✔️ สภาพแวดล้อมและสวัสดิการรองรับประเภทความพิการของคุณ (+20 Pts)");
+                    matchDetails.push("✔️ สภาพแวดล้อมรองรับความพิการของคุณ (+20 Pts)");
                 } else {
-                    ruleScore = 0;
-                    matchDetails.push("⚠️ สภาพแวดล้อมอาจยังไม่รองรับประเภทความพิการของคุณโดยตรง");
+                    matchDetails.push("⚠️ สภาพแวดล้อมอาจยังไม่รองรับโดยตรง");
                 }
 
-                // 🧠 ส่วนที่ 2: AI Semantic Logic (คำนวณโดย AI - เต็ม 80 คะแนน)
                 let aiScore = 0;
                 try {
                     const aiRes = await fetch('http://localhost:3000/api/get-ai-match', {
@@ -1225,81 +1368,38 @@ document.addEventListener('DOMContentLoaded', () => {
                             inspiration_message: inspStr
                         })
                     });
+                    
                     const aiData = await aiRes.json();
                     
                     if (aiData && aiData.total_ai_score !== undefined) {
-                        aiScore = aiData.total_ai_score;
-                        if (aiData.match_reasons && Array.isArray(aiData.match_reasons)) {
+                        aiScore = Number(aiData.total_ai_score);
+                        if(aiData.match_reasons && Array.isArray(aiData.match_reasons)) {
                             matchDetails = matchDetails.concat(aiData.match_reasons);
                         }
                     } else {
                         aiScore = 40; 
-                        matchDetails.push("🤖 ประเมินทักษะพื้นฐานเบื้องต้น");
+                        matchDetails.push("🤖 ประเมินจากข้อมูลทักษะเบื้องต้น");
                     }
                 } catch(e) {
-                    console.error("AI Match Error for job:", job.id, e);
                     aiScore = 40; 
+                    matchDetails.push("⚠️ ไม่สามารถประมวลผลเชิงลึกได้ในขณะนี้");
                 }
 
-                // รวมคะแนน (เต็ม 100)
                 const totalScore = ruleScore + aiScore;
                 rankedJobs.push({ ...job, matchScore: totalScore, matchDetails });
-            }));
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
 
-            // 5. เรียงลำดับจากคะแนนมากไปน้อย
             rankedJobs.sort((a, b) => b.matchScore - a.matchScore);
 
-            // 6. นำข้อมูลที่ได้มาวาดลงหน้ากระดาษ (ปรับให้ตรงกับ Layout ของ resume4.html เดิม)
-            rankListContainer.innerHTML = ''; 
+            sessionStorage.setItem('aiMatchedJobs', JSON.stringify(rankedJobs));
 
-            rankedJobs.forEach((job, index) => {
-                let badgeColor = job.matchScore >= 80 ? '#17A05D' : (job.matchScore >= 60 ? '#eab308' : '#ea580c');
-                let logoText = job.company_name ? job.company_name.substring(0, 2).toUpperCase() : 'JB';
-                
-                rankListContainer.innerHTML += `
-                    <div class="rank-card" role="listitem" tabindex="0" onclick="window.location.href='resume5.html?jobId=${job.id}'" style="cursor: pointer; position: relative; border-left: 6px solid ${badgeColor}; padding-right: 120px;">
-                        
-                        <div class="rank-number" style="background-color: ${badgeColor};" aria-hidden="true">${index + 1}</div>
-                        <div class="rank-logo-placeholder" style="background-color: ${badgeColor}; color: white;" aria-hidden="true">${logoText}</div> 
-                        
-                        <div class="rank-company" aria-hidden="true">${job.company_name}</div>
-                        
-                        <div class="rank-position" aria-hidden="true">
-                            <span class="rank-label">ตำแหน่งที่รับ :</span>
-                            <span class="rank-value">${job.job_title}</span>
-                        </div>
-                        
-                        <div class="rank-type" aria-hidden="true">
-                            <span class="rank-label">ประเภทงาน :</span>
-                            <span class="rank-value">${job.job_type || 'ไม่ระบุ'}</span>
-                        </div>
-
-                        <div style="margin-top: 12px; margin-left: 80px; display: flex; flex-wrap: wrap; gap: 6px;">
-                            ${job.matchDetails.slice(0, 2).map(m => `<span style="background:#f1f5f9; padding:4px 10px; border-radius:20px; font-size:12px; color:#475569;">✨ ${m}</span>`).join('')}
-                        </div>
-
-                        <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 75px; height: 75px; border: 4px solid ${badgeColor}; border-radius: 50%; background: #fff;">
-                            <span style="color: ${badgeColor}; font-size: 22px; font-weight: 800; line-height: 1;">${job.matchScore}</span>
-                            <span style="font-size: 10px; color: #64748b; font-weight: 600; margin-top: 2px;">MATCH</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Accessibility สำหรับผู้พิการทางสายตา (ให้ใช้คีย์บอร์ดกด Enter เพื่อเข้าดูงานได้)
-            const rCards = document.querySelectorAll('.rank-card');
-            rCards.forEach(card => {
-                card.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { 
-                        e.preventDefault(); 
-                        window.location.href = 'resume5.html?jobId=' + card.querySelector('div[onclick]').getAttribute('onclick').match(/'([^']+)'/)[1].split('=')[1]; 
-                    }
-                });
-            });
+            renderRankedJobs(rankedJobs);
 
         } catch (error) { 
-            console.error("Error matching jobs:", error); 
-            rankListContainer.innerHTML = '<div style="text-align:center; padding: 40px; width: 100%;"><p style="color:#ef4444; font-size: 18px; font-weight: 600;">❌ เกิดข้อผิดพลาดในการคำนวณและดึงข้อมูลงาน</p><p style="color:#666;">กรุณาลองตรวจสอบเซิร์ฟเวอร์หรือรีเฟรชหน้าเว็บอีกครั้ง</p></div>';
+            console.error("Error:", error); 
+            rankListContainer.innerHTML = '<div style="text-align:center; padding: 40px; width: 100%;"><p style="color:#ef4444;">❌ เกิดข้อผิดพลาดในการดึงข้อมูลงาน</p></div>';
         }
     }
 
@@ -1417,8 +1517,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 job_location: job_location,
                 job_salary: job_salary,
                 facility_desc: facility_desc,
-                job_description: job_description,
-                job_qualifications: job_qualifications,
+                job_description: desc, 
+                job_qualifications: qual, 
                 disability_type: disability_type || 'รับทุกประเภท', 
                 req_skills: req_skills,
                 status: 'open'
@@ -1484,10 +1584,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 🌟 16. ระบบดึงข้อมูลงานมาแสดงในหน้า post-employer2.html
+    // 🌟 16. ระบบดึงข้อมูลงานมาแสดงในหน้า post-employer2.html และ resume5.html
     // ==========================================
-    const isPostEmployer2Page = window.location.pathname.includes('post-employer2.html');
-    if (isPostEmployer2Page) {
+    const isJobDetailPage = window.location.pathname.includes('post-employer2.html') || window.location.pathname.includes('resume5.html');
+    
+    if (isJobDetailPage) {
         const urlParams = new URLSearchParams(window.location.search);
         const jobId = urlParams.get('jobId');
 
@@ -1500,22 +1601,61 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         setEl('render-job-title', job.job_title);
                         setEl('render-company-name', job.company_name);
-                        document.getElementById('render-job-logo').textContent = (job.company_name || 'C').charAt(0); 
                         
-                        document.getElementById('render-job-location').innerHTML = `<span aria-hidden="true">📍</span> ${job.job_location || '-'}`;
-                        document.getElementById('render-job-type').innerHTML = `<span aria-hidden="true">💼</span> ${job.job_type || '-'}`;
-                        document.getElementById('render-job-salary').innerHTML = `<span aria-hidden="true">💰</span> ${job.salary || 'ตามตกลง'}`;
+                        const logoEl = document.getElementById('render-job-logo');
+                        if (logoEl) {
+                            let logoText = job.company_name ? job.company_name.substring(0, 3).toUpperCase() : 'JOB';
+                            logoEl.textContent = logoText;
+                            
+                            let badgeColor = '#ea580c'; 
+                            const cachedJobsStr = sessionStorage.getItem('aiMatchedJobs');
+                            let matchedJob = null;
+                            if (cachedJobsStr) {
+                                const cachedJobs = JSON.parse(cachedJobsStr);
+                                matchedJob = cachedJobs.find(j => String(j.id) === String(jobId));
+                                if (matchedJob) {
+                                    const bgColors = ['#000000', '#17A05D', '#00A5E0', '#EE3124', '#E2231A', '#005A9C', '#FF6600', '#0F146D', '#00A651'];
+                                    badgeColor = bgColors[(matchedJob.id || 0) % bgColors.length];
+                                }
+                            }
+                            
+                            logoEl.style.backgroundColor = badgeColor;
+                            logoEl.style.color = '#ffffff';
+                            logoEl.style.display = 'flex';
+                            logoEl.style.alignItems = 'center';
+                            logoEl.style.justifyContent = 'center';
+                            
+                            const aiReasonSection = document.getElementById('ai-match-reason-section');
+                            const aiReasonsList = document.getElementById('render-ai-reasons');
+                            if (aiReasonSection && aiReasonsList && matchedJob && matchedJob.matchDetails && matchedJob.matchDetails.length > 0) {
+                                aiReasonSection.style.display = 'block';
+                                aiReasonsList.innerHTML = matchedJob.matchDetails.map(reason => `<li style="margin-bottom: 8px;">${reason}</li>`).join('');
+                            }
+                        }
                         
-                        document.getElementById('render-job-desc').textContent = job.job_desc || '-';
-                        document.getElementById('render-req-skills').textContent = job.req_skills || '-';
+                        const locEl = document.getElementById('render-job-location');
+                        if(locEl) locEl.innerHTML = `<span aria-hidden="true">📍</span> ${job.job_location || '-'}`;
+                        
+                        const typeEl = document.getElementById('render-job-type');
+                        if(typeEl) typeEl.innerHTML = `<span aria-hidden="true">💼</span> ${job.job_type || '-'}`;
+                        
+                        const salaryEl = document.getElementById('render-job-salary');
+                        if(salaryEl) salaryEl.innerHTML = `<span aria-hidden="true">💰</span> ${job.salary || 'ตามตกลง'}`;
+                        
+                        setEl('render-job-desc', job.job_desc || '-');
+                        setEl('render-req-skills', job.req_skills || '-');
 
-                        const accom = job.accommodation ? job.accommodation : 'ไม่ได้ระบุ';
-                        document.getElementById('render-disability-support').innerHTML = `บริษัทยินดีต้อนรับผู้สมัครที่เป็นผู้พิการ <strong>${job.disability_type || 'รับทุกประเภท'}</strong> โดยมีสิ่งอำนวยความสะดวก: <strong>${accom}</strong>`;
+                        const disSupportEl = document.getElementById('render-disability-support');
+                        if(disSupportEl) {
+                            const accom = job.accommodation ? job.accommodation : 'ไม่ได้ระบุ';
+                            disSupportEl.innerHTML = `บริษัทยินดีต้อนรับผู้สมัครที่เป็นผู้พิการ <strong>${job.disability_type || 'รับทุกประเภท'}</strong> โดยมีสิ่งอำนวยความสะดวก: <strong>${accom}</strong>`;
+                        }
                     }
                 })
                 .catch(err => console.error("Error fetching job details:", err));
         }
     }
+
     // ==========================================
     // 🌟 17. ระบบดาวน์โหลดเรซูเม่เป็น PDF (หน้า profile-job2.html)
     // ==========================================

@@ -63,8 +63,14 @@
 
 <main class="resume3-layout" id="main-content" aria-labelledby="resume3-title">
     
-        <div style="width: 100%; max-width: 800px; margin: 0 auto 10px auto; display: flex; justify-content: flex-start; align-items: center;">
-            <a href="profile-job.html" class="file-name" aria-label="กลับไปหน้าโปรไฟล์" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E293B; font-weight: 500; font-size: 18px;">
+        <style>
+            @media print {
+                .no-print { display: none !important; }
+            }
+        </style>
+
+        <div class="no-print" style="width: 100%; max-width: 800px; margin: 0 auto 20px auto;">
+            <a href="profile-job.html" class="file-name" aria-label="กลับไปหน้าโปรไฟล์" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #1E293B; font-weight: 500; font-size: 18px;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
@@ -237,12 +243,14 @@
                 </div>
             </div>
             
+        </div> 
+
+        <div class="form-actions no-print" style="width: 100%; max-width: 800px; margin: 30px auto; display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" onclick="window.location.href='resume.html'" id="btn-edit-resume" aria-label="แก้ไขเรซูเม่" style="padding: 12px 24px; border: 1px solid #CBD5E1; background-color: #f1f5f9; color: #334155; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s; font-family: 'Noto Sans Thai', sans-serif; font-size: 16px;">แก้ไขเรซูเม่</button>
+            <button type="button" class="btn-submit-resume" id="btn-save-profile" onclick="window.location.href='resume4.html'" aria-label="จับคู่งาน">จับคู่งาน</button>
+        </div>
 
     </main>
-
-
-
-
 
     <footer class="site-footer" role="contentinfo">
         <div class="footer-content">

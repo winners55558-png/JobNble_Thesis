@@ -96,7 +96,7 @@ app.post('/api/save-resume', (req, res) => {
         disability_type, disability_level, summary, skills, 
         education_history, work_experience, intern_experience, activities, portfolio_url,
         selected_template, 
-        job_position // รับค่าตำแหน่งงานที่ต้องการ
+        job_position
     } = req.body;
 
     const safeDob = dob ? dob : '1970-01-01';
@@ -117,7 +117,6 @@ app.post('/api/save-resume', (req, res) => {
             const expStr = "ทำงาน: " + workStr + " ฝึกงาน: " + internStr;
 
             if (results.length > 0) {
-                // UPDATE (เพิ่ม job_position)
                 const updateResume = `UPDATE resumes SET 
                     dob=?, disability_type=?, disability_level=?, address=?, sub_district=?, district=?, province=?, zipcode=?, 
                     summary=?, skills=?, education_history=?, work_experience=?, intern_experience=?, activities=?, portfolio_url=?,
@@ -134,7 +133,6 @@ app.post('/api/save-resume', (req, res) => {
                      res.json({ success: true, message: "อัปเดตข้อมูลเรซูเม่และเทมเพลตสำเร็จ!" });
                 });
             } else {
-                // INSERT (เพิ่ม job_position)
                 const insertResume = `INSERT INTO resumes (
                     seeker_id, dob, disability_type, disability_level, address, sub_district, district, province, zipcode, 
                     summary, skills, education_history, work_experience, intern_experience, activities, portfolio_url,
@@ -289,6 +287,22 @@ app.get('/api/get-employer-jobs/:employerId', (req, res) => {
     db.query(sql, [req.params.employerId], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
+    });
+});
+// ==========================================
+// 14. API ลบข้อมูลเรซูเม่
+// ==========================================
+app.delete('/api/delete-resume/:seekerId', (req, res) => {
+    const seekerId = req.params.seekerId;
+    const sql = `DELETE FROM resumes WHERE seeker_id = ?`;
+    
+    db.query(sql, [seekerId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.affectedRows > 0) {
+            res.json({ success: true, message: "ลบเรซูเม่เรียบร้อยแล้ว" });
+        } else {
+            res.json({ success: false, message: "ไม่พบเรซูเม่ในระบบ" });
+        }
     });
 });
 

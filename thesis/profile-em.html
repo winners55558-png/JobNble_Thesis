@@ -73,47 +73,28 @@
         <div class="profile-container">
             
             <div class="profile-box">
-                <div class="profile-info-grid">
+                <div class="profile-info-grid" id="profile-content-area">
                     <div class="info-label">บริษัท</div>
-                    <div class="info-value">จ๊อบเอ็นเบิ้ล</div>
+                    <div class="info-value" id="prof-name">กำลังโหลดข้อมูล...</div>
                     
                     <div class="info-label">อีเมล</div>
-                    <div class="info-value">jobnble@gmail.com</div>
+                    <div class="info-value" id="prof-email">กำลังโหลดข้อมูล...</div>
                     
                     <div class="info-label">เบอร์โทรศัพท์</div>
-                    <div class="info-value">02 399 3999</div>
+                    <div class="info-value" id="prof-phone">กำลังโหลดข้อมูล...</div>
 
                     <div class="info-label">ที่อยู่</div>
-                    <div class="info-value">99/9 อาคารนวัตกรรม ชั้น 5 ถนนพระราม 4 เขตปทุมวัน กรุงเทพมหานคร 10330</div>
+                    <div class="info-value" id="prof-address">กำลังโหลดข้อมูล...</div>
                 </div>
             </div>
 
-            <div class="profile-box files-box">
+            <div class="profile-box files-box" id="employer-jobs-section" style="display: none;">
                 <div class="files-header">
                     <h2>ประวัติการโพสต์ประกาศงาน</h2>
                 </div>
                 
-                <div class="files-list">
-                    <div class="file-item employer-item">
-                        <a href="post-employer2.html" class="file-name">โพสต์ประกาศงาน1</a>
-                        <div class="file-date">28/3/2568</div>
-                        
-                        <div class="action-menu-container">
-                            <button class="file-menu-btn" aria-label="ตัวเลือกจัดการโพสต์" aria-haspopup="true" aria-expanded="false">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="1.5"></circle>
-                                    <circle cx="19" cy="12" r="1.5"></circle>
-                                    <circle cx="5" cy="12" r="1.5"></circle>
-                                </svg>
-                            </button>
-                            
-                            <ul class="action-dropdown" role="menu">
-                                <li role="none"><a role="menuitem" href="post-employer.html?edit=1" class="edit-action">แก้ไขโพสต์</a></li>
-                                <li role="none"><button role="menuitem" class="delete-action">ลบโพสต์</button></li>
-                            </ul>
-                        </div>
+                <div class="files-list" id="employer-jobs-list">
                     </div>
-                </div>
             </div>
 
         </div>
