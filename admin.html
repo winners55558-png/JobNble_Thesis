@@ -148,6 +148,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+
             // 1. โหลดสถิติรวม
             try {
                 const statRes = await fetch('http://localhost:3000/api/admin/stats');
@@ -158,30 +159,114 @@
                 document.getElementById('stat-apps').textContent = stats.total_applications;
             } catch (err) { console.error("Error fetching stats:", err); }
 
-            // 2. โหลดรายชื่อผู้ใช้งาน
+            // 2. โหลด KYC Pending
+            loadPendingEmployers();
+
+            // 3. โหลดรายชื่อผู้ใช้งาน
+            loadUsers();
+
+            // 4. โหลดประกาศงาน
+            loadJobs();
+        });
+
+        // ── โหลด KYC Pending ──
+        async function loadPendingEmployers() {
+            try {
+                const res = await fetch('http://localhost:3000/api/admin/pending-employers');
+                const employers = await res.json();
+                const tbody = document.getElementById('pending-table-body');
+
+                if (employers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#10b981; font-weight:600; padding:20px;">✅ ไม่มีบริษัทที่รอการอนุมัติค้างอยู่</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                employers.forEach(em => {
+                    const taxId = em.tax_id ? em.tax_id : '<span style="color:#ef4444; font-weight:600;">ยังไม่ระบุ</span>';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>#${em.id}</td>
+                            <td style="font-weight:600;">${em.company_name}</td>
+                            <td>${em.email}</td>
+                            <td><span class="tax-id-badge">${taxId}</span></td>
+                            <td>
+                                <button class="btn-approve" onclick="approveEmployer(${em.id})">
+                                    <i class="fas fa-check"></i> อนุมัติ (Tax ID ถูกต้อง)
+                                </button>
+                                <button class="btn-reject-delete" onclick="deleteEmployer(${em.id}, '${em.company_name.replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-trash"></i> ปฏิเสธ + ลบแอคเค้าน์
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        // ── อนุมัติ: Tax ID ถูกต้อง ──
+        async function approveEmployer(id) {
+            if (confirm('✅ ยืนยันว่า Tax ID ของบริษัทนี้ถูกต้อง และต้องการอนุมัติใช่หรือไม่?')) {
+                try {
+                    const res = await fetch(`http://localhost:3000/api/admin/verify-employer/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'approved' })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('✅ อนุมัติบริษัทเรียบร้อยแล้ว!');
+                        loadPendingEmployers();
+                    }
+                } catch (err) { alert('เกิดข้อผิดพลาด'); }
+            }
+        }
+
+        // ── ปฏิเสธ + ลบแอคเค้าน์: Tax ID ไม่ถูกต้อง ──
+        async function deleteEmployer(id, companyName) {
+            if (confirm(`⚠️ คำเตือน: Tax ID ของ "${companyName}" ไม่ถูกต้อง\n\nการดำเนินการนี้จะ:\n- ลบแอคเค้าน์นายจ้างออกจากระบบถาวร\n- ลบประกาศงานทั้งหมดของบริษัทนี้\n\nแน่ใจหรือไม่?`)) {
+                try {
+                    const res = await fetch(`http://localhost:3000/api/admin/delete-employer/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert(`🗑️ ลบแอคเค้าน์ "${companyName}" เรียบร้อยแล้ว`);
+                        loadPendingEmployers();
+                        loadUsers();
+                        // ลด stat นายจ้าง
+                        const statEm = document.getElementById('stat-employers');
+                        if (statEm && !isNaN(parseInt(statEm.textContent))) {
+                            statEm.textContent = parseInt(statEm.textContent) - 1;
+                        }
+                    }
+                } catch (err) { alert('เกิดข้อผิดพลาดในการลบแอคเค้าน์'); }
+            }
+        }
+
+        // ── โหลดรายชื่อผู้ใช้ทั้งหมด ──
+        async function loadUsers() {
             try {
                 const userRes = await fetch('http://localhost:3000/api/admin/users');
                 const users = await userRes.json();
                 const userTbody = document.getElementById('user-table-body');
                 userTbody.innerHTML = '';
                 users.forEach(user => {
-                    const badge = user.role === 'Seeker' ? '<span class="badge bg-blue">ผู้หางาน</span>' : '<span class="badge bg-green">นายจ้าง</span>';
+                    const badge = user.role === 'Seeker'
+                        ? '<span class="badge bg-blue">ผู้หางาน</span>'
+                        : '<span class="badge bg-green">นายจ้าง</span>';
                     userTbody.innerHTML += `
                         <tr>
                             <td>#${user.id}</td>
                             <td>${badge}</td>
-                            <td style="font-weight: 500;">${user.name}</td>
+                            <td style="font-weight:500;">${user.name}</td>
                             <td>${user.email}</td>
                             <td>${user.phone}</td>
                         </tr>
                     `;
                 });
             } catch (err) { console.error("Error fetching users:", err); }
+        }
 
-            // 3. โหลดประกาศงาน
-            loadJobs();
-        });
-
+        // ── โหลดประกาศงาน ──
         async function loadJobs() {
             try {
                 const jobRes = await fetch('http://localhost:3000/api/jobs');
@@ -192,7 +277,7 @@
                     jobTbody.innerHTML += `
                         <tr>
                             <td>#${job.id}</td>
-                            <td style="font-weight: 500;">${job.company_name}</td>
+                            <td style="font-weight:500;">${job.company_name}</td>
                             <td>${job.job_title}</td>
                             <td><span class="badge bg-green">เปิดรับสมัคร</span></td>
                             <td><button class="btn-delete" onclick="deleteJob(${job.id})"><i class="fas fa-trash"></i> ลบประกาศ</button></td>
@@ -203,73 +288,18 @@
         }
 
         async function deleteJob(jobId) {
-            if(confirm("⚠️ คำเตือน: แน่ใจหรือไม่ว่าต้องการลบประกาศงานนี้ออกจากระบบ?")) {
+            if (confirm('⚠️ คำเตือน: แน่ใจหรือไม่ว่าต้องการลบประกาศงานนี้ออกจากระบบ?')) {
                 try {
                     const res = await fetch(`http://localhost:3000/api/admin/delete-job/${jobId}`, { method: 'DELETE' });
                     const result = await res.json();
-                    if(result.success) {
-                        loadJobs(); // โหลดตารางใหม่
-                        // อัปเดตตัวเลขสถิติแบบไม่ต้องรีเฟรชหน้า
+                    if (result.success) {
+                        loadJobs();
                         const statJobs = document.getElementById('stat-jobs');
-                        statJobs.textContent = parseInt(statJobs.textContent) - 1;
+                        if (statJobs && !isNaN(parseInt(statJobs.textContent))) {
+                            statJobs.textContent = parseInt(statJobs.textContent) - 1;
+                        }
                     }
-                } catch (err) { alert("เกิดข้อผิดพลาดในการลบงาน"); }
-            }
-        }
-
-        // เอาฟังก์ชัน loadPendingEmployers() ไปใส่ไว้ใน DOMContentLoaded ด้วยนะครับ
-        document.addEventListener('DOMContentLoaded', async () => {
-            // ... (โค้ดเดิมที่โหลดสถิติและข้อมูลอื่นๆ) ...
-            loadPendingEmployers(); // เพิ่มบรรทัดนี้เข้าไป
-        });
-
-        // 🌟 ฟังก์ชันโหลดรายชื่อบริษัทที่รออนุมัติ
-        async function loadPendingEmployers() {
-            try {
-                const res = await fetch('http://localhost:3000/api/admin/pending-employers');
-                const employers = await res.json();
-                const tbody = document.getElementById('pending-table-body');
-                
-                if (employers.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #10b981; font-weight: 600;">✅ ไม่มีบริษัทที่รอการอนุมัติค้างอยู่</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = '';
-                employers.forEach(em => {
-                    const taxId = em.tax_id ? em.tax_id : '<span style="color:red">ยังไม่ระบุ</span>';
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>#${em.id}</td>
-                            <td style="font-weight: 600;">${em.company_name}</td>
-                            <td>${em.email}</td>
-                            <td><span class="badge" style="background:#f1f5f9; color:#475569; letter-spacing: 1px;">${taxId}</span></td>
-                            <td>
-                                <button onclick="verifyEmployer(${em.id}, 'approved')" style="background:#10b981; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:600; margin-right:5px;">✅ อนุมัติ</button>
-                                <button onclick="verifyEmployer(${em.id}, 'rejected')" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:600;">❌ ปฏิเสธ</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (err) { console.error(err); }
-        }
-
-        // 🌟 ฟังก์ชันเมื่อแอดมินกด อนุมัติ หรือ ปฏิเสธ
-        async function verifyEmployer(id, status) {
-            const actionText = status === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
-            if (confirm(`คุณต้องการ ${actionText} บริษัทนี้ใช่หรือไม่?`)) {
-                try {
-                    const res = await fetch(`http://localhost:3000/api/admin/verify-employer/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ status })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        alert(`${actionText} เรียบร้อยแล้ว!`);
-                        loadPendingEmployers(); // โหลดตารางใหม่
-                    }
-                } catch (err) { alert("เกิดข้อผิดพลาด"); }
+                } catch (err) { alert('เกิดข้อผิดพลาดในการลบงาน'); }
             }
         }
     </script>

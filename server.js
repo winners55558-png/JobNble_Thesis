@@ -1,8 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const axios = require('axios'); 
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
@@ -74,7 +75,19 @@ db.connect(err => {
                 ensureColumn('employers', 'subscription_expires_at', "DATETIME DEFAULT NULL", function () {
                     ensureColumn('employers', 'created_at', "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", function () {
                         ensureColumn('applications', 'match_score', "INT DEFAULT 0", function () {
-                            ensureColumn('applications', 'match_details', "TEXT DEFAULT NULL");
+                            ensureColumn('applications', 'match_details', "TEXT DEFAULT NULL", function () {
+                                ensureColumn('jobs_post', 'work_mode', "VARCHAR(50) DEFAULT NULL", function () {
+                                    ensureColumn('jobs_post', 'req_education', "VARCHAR(100) DEFAULT NULL", function () {
+                                        ensureColumn('jobs_post', 'age_min', "INT DEFAULT NULL", function () {
+                                            ensureColumn('jobs_post', 'age_max', "INT DEFAULT NULL", function () {
+                                                ensureColumn('resumes', 'preferred_work_mode', "VARCHAR(50) DEFAULT NULL", function () {
+                                                    ensureColumn('employers', 'verification_status', "VARCHAR(20) DEFAULT 'pending'");
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
                         });
                     });
                 });
@@ -106,9 +119,6 @@ const safeJson = (val) => {
 // ==========================================
 // 🧮 Rule-Based Match Score (5 หมวด รวม 100 คะแนน)
 // ==========================================
-// ==========================================
-// 🧮 Rule-Based Match Score (6 หมวด รวม 100 คะแนน)
-// ==========================================
 function calcMatchScore(resume, job) {
     let score   = 0;
     let reasons = [];
@@ -119,80 +129,87 @@ function calcMatchScore(resume, job) {
         try { return JSON.parse(val); } catch (e) { return []; }
     };
 
-    // ── 1. Disability Fit (20 คะแนน) ──
+    // ── 1. Disability Fit — 20 คะแนน ──
     const reqDisType = job.disability_type || '';
     const myDisType  = resume.disability_type || '';
     if (reqDisType.includes('รับทุกประเภท') || (myDisType && reqDisType.includes(myDisType))) {
-        score += 20; reasons.push('✔️ สภาพแวดล้อมรองรับความพิการของคุณ (+20)');
+        score += 20;
+        reasons.push('✔️ สภาพแวดล้อมรองรับความพิการของคุณ (+20)');
     } else {
         reasons.push('⚠️ สภาพแวดล้อมอาจยังไม่รองรับโดยตรง (0)');
     }
 
-    // ── 2. Position Match (20 คะแนน) ──
-    let posScore = 0;
-    const expectedPos = (resume.job_position || '').toLowerCase();
-    const jobTitle = (job.job_title || '').toLowerCase();
-    const jobCat = (job.job_category || '').toLowerCase();
-
-    if (expectedPos && (jobTitle.includes(expectedPos) || expectedPos.includes(jobTitle) || jobCat.includes(expectedPos))) {
-        posScore = 20; reasons.push('🎯 ตำแหน่งงานตรงกับที่คุณคาดหวังไว้ (+20)');
-    } else {
-        const workExp = safeParseJSON(resume.work_experience);
-        let hasRelatedExp = false;
-        workExp.forEach(exp => {
-            const oldTitle = (exp.title || '').toLowerCase();
-            if (oldTitle && (jobTitle.includes(oldTitle) || jobCat.includes(oldTitle))) hasRelatedExp = true;
-        });
-        if (hasRelatedExp) { posScore = 15; reasons.push('💼 มีประสบการณ์เก่าที่ตรงกับสายงานนี้ (+15)'); } 
-        else { posScore = 5; reasons.push('🔹 ตำแหน่งนี้เป็นสายงานใหม่สำหรับคุณ (+5)'); }
-    }
-    score += posScore;
-
-    // ── 3. Skills Match (20 คะแนน) ──
+    // ── 2. Skills Match — 25 คะแนน ──
     const mySkills     = (resume.skills || '').toLowerCase();
     const reqSkillsArr = (job.req_skills || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
     if (reqSkillsArr.length > 0 && mySkills) {
         let matchCount = 0;
         reqSkillsArr.forEach(req => { if (mySkills.includes(req)) matchCount++; });
-        const skillScore = Math.floor((matchCount / reqSkillsArr.length) * 20);
+        const skillScore = Math.floor((matchCount / reqSkillsArr.length) * 25);
         score += skillScore;
-        if (skillScore > 0) reasons.push(`💡 มีทักษะตรงตามที่ตำแหน่งงานต้องการ ${matchCount} อย่าง (+${skillScore})`);
-        else reasons.push(`⚠️ ทักษะอาจจะยังไม่ตรงกับที่ระบุไว้ (0)`);
+        if (skillScore > 0) reasons.push(`💡 มีทักษะตรงตามที่ตำแหน่งงานต้องการ ${matchCount} ทักษะ (+${skillScore})`);
     } else if (reqSkillsArr.length === 0) {
-        score += 20; reasons.push('💡 นายจ้างไม่ได้ระบุทักษะเฉพาะทาง (+20)');
+        score += 25;
     }
 
-    // ── 4. Location Match (15 คะแนน) ──
-    const myProvince = (resume.province || '').trim();
-    const jobLocation = (job.job_location || '').trim();
-    const jobType = (job.job_type || '').toLowerCase();
+    // ── 3. Experience & Activities — 30 คะแนน ──
+    let expScore = 0;
+    let hasExp   = false;
+    const workExp   = safeParseJSON(resume.work_experience);
+    const internExp = safeParseJSON(resume.intern_experience);
+    const actExp    = safeParseJSON(resume.activities);
 
-    if (jobType.includes('work from home') || jobType.includes('wfh')) {
-        score += 15; reasons.push('🏠 เป็นงาน Work From Home (+15)');
-    } else if (myProvince && jobLocation.includes(myProvince)) {
-        score += 15; reasons.push('📍 สถานที่ทำงานอยู่ในจังหวัดเดียวกับคุณ (+15)');
-    } else {
-        score += 5; reasons.push('🚗 สถานที่ทำงานอยู่ต่างพื้นที่ (+5)');
+    if (workExp.length > 0)        { expScore += 15; hasExp = true; }
+    else if (internExp.length > 0) { expScore += 10; hasExp = true; }
+    else if (actExp.length > 0)    { expScore +=  5; }
+
+    const jobTitle   = (job.job_title    || '').toLowerCase();
+    const jobCat     = (job.job_category || '').toLowerCase();
+    let isRelevant   = false;
+
+    const checkRelevance = (arr) => {
+        arr.forEach(exp => {
+            const title = (exp.title || exp.name || '').toLowerCase();
+            if (title && (jobTitle.includes(title) || title.includes(jobTitle) || jobCat.includes(title.split(' ')[0]))) {
+                isRelevant = true;
+            }
+        });
+    };
+    checkRelevance(workExp);
+    checkRelevance(internExp);
+
+    if (isRelevant) {
+        expScore += 15;
+        reasons.push(`💼 มีประวัติการทำงาน/ฝึกงาน ที่เกี่ยวข้องกับตำแหน่งนี้โดยตรง (+${expScore})`);
+    } else if (hasExp) {
+        expScore += 5;
+        reasons.push(`💼 มีประสบการณ์การทำงานขั้นพื้นฐาน (+${expScore})`);
     }
+    score += expScore;
 
-    // ── 5. Salary Match (15 คะแนน) ──
-    const expectedSalaryStr = (resume.expected_salary || '').replace(/,/g, '').match(/\d+/);
-    const expectedSalary = expectedSalaryStr ? parseInt(expectedSalaryStr[0]) : 0;
-    const jobSalaryStr = (job.salary || '').replace(/,/g, '');
-    const jobSalaryNums = jobSalaryStr.match(/\d+/g);
-    const jobMaxSalary = jobSalaryNums ? Math.max(...jobSalaryNums.map(Number)) : 0;
-
-    if (jobSalaryStr.includes('ตามตกลง') || expectedSalary === 0) {
-        score += 10; reasons.push('💰 เงินเดือนพิจารณาตามตกลง (+10)');
-    } else if (jobMaxSalary >= expectedSalary) {
-        score += 15; reasons.push('💰 ฐานเงินเดือนสอดคล้องกับความคาดหวัง (+15)');
-    } else {
-        score += 5; reasons.push('💰 ฐานเงินเดือนอาจต่ำกว่าที่คาดหวังเล็กน้อย (+5)');
-    }
-
-    // ── 6. Education (10 คะแนน) ──
+    // ── 4. Education Match — 15 คะแนน ──
+    let eduScore = 0;
     const eduHist = safeParseJSON(resume.education_history);
-    if (eduHist.length > 0) { score += 10; reasons.push('🎓 มีประวัติการศึกษาผ่านเกณฑ์พื้นฐาน (+10)'); }
+    if (eduHist.length > 0) {
+        eduScore += 8;
+        const major = (eduHist[0].major || '').toLowerCase();
+        if (major && (jobCat.includes(major) || major.includes(jobCat.split('/')[0]))) {
+            eduScore += 7;
+            reasons.push(`🎓 สาขาวิชาที่จบการศึกษาตรงกับหมวดหมู่งาน (+${eduScore})`);
+        } else {
+            reasons.push(`🎓 มีวุฒิการศึกษาขั้นพื้นฐานตามเกณฑ์ (+${eduScore})`);
+        }
+    }
+    score += eduScore;
+
+    // ── 5. Attitude / Summary — 10 คะแนน ──
+    let attScore = 0;
+    const summary = resume.summary || '';
+    if (summary.length > 30) attScore += 5;
+    const positiveWords = ['ตั้งใจ', 'พัฒนา', 'เรียนรู้', 'พยายาม', 'รับผิดชอบ', 'พร้อม', 'อดทน', 'สามารถ', 'มุ่งมั่น'];
+    if (positiveWords.some(w => summary.includes(w))) attScore += 5;
+    score += attScore;
+    if (attScore > 0) reasons.push(`✨ มีทัศนคติเชิงบวกและแสดงความตั้งใจในเรซูเม่ (+${attScore})`);
 
     return { score: Math.min(score, 100), reasons };
 }
@@ -203,31 +220,39 @@ function calcMatchScore(resume, job) {
 app.post('/api/register/seeker', (req, res) => {
     const { first_name, last_name, phone, email, password } = req.body;
     const sql = "INSERT INTO job_seekers (first_name, last_name, phone, email, password) VALUES (?, ?, ?, ?, ?)";
-    
-    db.query(sql, [safeStr(first_name), safeStr(last_name), safeStr(phone), safeStr(email), safeStr(password)], (err) => {
+
+    db.query(sql, [safeStr(first_name), safeStr(last_name), safeStr(phone), safeStr(email), safeStr(password)], (err, result) => {
         if (err) {
             if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: "อีเมลนี้มีผู้ใช้งานแล้ว" });
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true, message: 'สมัครสมาชิกสำเร็จ!' });
+        // ✅ ส่ง user data กลับเพื่อให้ frontend auto-login ได้ทันที
+        res.json({
+            success: true,
+            message: 'สมัครสมาชิกสำเร็จ!',
+            user: { id: result.insertId, name: safeStr(first_name) }
+        });
     });
 });
 
 // ==========================================
-// 3b. API สมัครสมาชิก (นายจ้าง)
+// 3. API สมัครสมาชิก (นายจ้าง)
 // ==========================================
 app.post('/api/register/employer', (req, res) => {
     const { company_name, phone, address, tax_id, email, password } = req.body;
-    
-    // 🚨 อัปเดตใหม่: บังคับใส่สถานะ 'pending' เข้าไปในฐานข้อมูลตอนสมัครทันที
     const sql = "INSERT INTO employers (company_name, phone, address, tax_id, email, password, verification_status) VALUES (?, ?, ?, ?, ?, ?, 'pending')";
-    
-    db.query(sql, [safeStr(company_name), safeStr(phone), safeStr(address), safeStr(tax_id), safeStr(email), safeStr(password)], (err) => {
+
+    db.query(sql, [safeStr(company_name), safeStr(phone), safeStr(address), safeStr(tax_id), safeStr(email), safeStr(password)], (err, result) => {
         if (err) {
             if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: "อีเมลนี้มีผู้ใช้งานแล้ว" });
             return res.status(500).json({ error: err.message });
         }
-        res.json({ success: true, message: "สมัครสมาชิกบริษัทเรียบร้อยแล้ว" });
+        // ✅ ส่ง user data กลับเพื่อให้ frontend auto-login ได้ทันที
+        res.json({
+            success: true,
+            message: 'สมัครสมาชิกสำเร็จ!',
+            user: { id: result.insertId, name: safeStr(company_name) }
+        });
     });
 });
 
@@ -259,6 +284,7 @@ app.post('/api/save-resume', (req, res) => {
         job_position,
         job_type,
         expected_salary,
+        preferred_work_mode,
         profile_pic
     } = req.body;
 
@@ -283,14 +309,14 @@ app.post('/api/save-resume', (req, res) => {
                 const updateResume = `UPDATE resumes SET
                     dob=?, disability_type=?, disability_level_visual=?, disability_level_hearing=?, disability_level_physical=?, address=?, sub_district=?, district=?, province=?, zipcode=?,
                     summary=?, skills=?, education_history=?, work_experience=?, intern_experience=?, activities=?, portfolio_url=?,
-                    education_level=?, experience=?, portfolio=?, selected_template=?, job_position=?, job_type=?, expected_salary=?,
+                    education_level=?, experience=?, portfolio=?, selected_template=?, job_position=?, job_type=?, expected_salary=?, preferred_work_mode=?,
                     profile_pic=COALESCE(NULLIF(?, ''), profile_pic)
                     WHERE seeker_id=?`;
 
                 db.query(updateResume, [
                     safeDob, safeStr(disability_type), safeStr(disability_level_visual), safeStr(disability_level_hearing), safeStr(disability_level_physical), safeStr(address), safeStr(sub_district), safeStr(district), safeStr(province), safeStr(zipcode),
                     safeStr(summary), safeStr(skills), eduStr, workStr, internStr, actStr, safeStr(portfolio_url),
-                    safeStr(highestEdu), expStr, '', safeStr(selected_template), safeStr(job_position), safeStr(job_type), safeStr(expected_salary),
+                    safeStr(highestEdu), expStr, '', safeStr(selected_template), safeStr(job_position), safeStr(job_type), safeStr(expected_salary), safeStr(preferred_work_mode),
                     safeStr(profile_pic),
                     seeker_id
                 ], (err) => {
@@ -301,13 +327,13 @@ app.post('/api/save-resume', (req, res) => {
                 const insertResume = `INSERT INTO resumes (
                     seeker_id, dob, disability_type, disability_level_visual, disability_level_hearing, disability_level_physical, address, sub_district, district, province, zipcode,
                     summary, skills, education_history, work_experience, intern_experience, activities, portfolio_url,
-                    education_level, experience, portfolio, selected_template, job_position, job_type, expected_salary, profile_pic
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    education_level, experience, portfolio, selected_template, job_position, job_type, expected_salary, preferred_work_mode, profile_pic
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
                 db.query(insertResume, [
                     seeker_id, safeDob, safeStr(disability_type), safeStr(disability_level_visual), safeStr(disability_level_hearing), safeStr(disability_level_physical), safeStr(address), safeStr(sub_district), safeStr(district), safeStr(province), safeStr(zipcode),
                     safeStr(summary), safeStr(skills), eduStr, workStr, internStr, actStr, safeStr(portfolio_url),
-                    safeStr(highestEdu), expStr, '', safeStr(selected_template), safeStr(job_position), safeStr(job_type), safeStr(expected_salary), safeStr(profile_pic)
+                    safeStr(highestEdu), expStr, '', safeStr(selected_template), safeStr(job_position), safeStr(job_type), safeStr(expected_salary), safeStr(preferred_work_mode), safeStr(profile_pic)
                 ], (err) => {
                      if (err) return res.status(500).json({ error: err.message });
                      res.json({ success: true, message: "บันทึกข้อมูลเรซูเม่และเทมเพลตสำเร็จ!" });
@@ -361,10 +387,10 @@ app.get('/api/jobs', (req, res) => {
 
 // ==========================================
 // 8b. API ค้นหางาน (พร้อม relevance score)
-// GET /api/jobs/search?q=keyword&category=it&type=fulltime
+// GET /api/jobs/search?q=keyword&category=it&type=fulltime&disability_type=...&disability_level=...
 // ==========================================
 app.get('/api/jobs/search', (req, res) => {
-    const { q, category, type } = req.query;
+    const { q, category, type, disability_type, disability_level } = req.query;
     const hasQ = q && q.trim() !== '';
     const exact = hasQ ? q.trim() : '';
     const like  = `%${exact}%`;
@@ -380,6 +406,14 @@ app.get('/api/jobs/search', (req, res) => {
     }
     if (category && category !== '') { whereClauses.push('j.job_category = ?'); whereParams.push(category); }
     if (type     && type     !== '') { whereClauses.push('j.job_type = ?');     whereParams.push(type); }
+    if (disability_type && disability_type !== '') {
+        whereClauses.push(`(j.disability_type LIKE ? OR j.disability_type LIKE '%รับทุกประเภท%')`);
+        whereParams.push(`%${disability_type}%`);
+    }
+    if (disability_level && disability_level !== '') {
+        whereClauses.push(`j.disability_level LIKE ?`);
+        whereParams.push(`%${disability_level}%`);
+    }
 
     let sql, allParams;
     if (hasQ) {
@@ -421,7 +455,8 @@ app.post('/api/save-job', (req, res) => {
     const {
         employer_id, job_title, job_category, job_type, job_location, job_salary,
         facility_desc, job_description, job_qualifications, disability_type,
-        req_skills, req_experience, req_portfolio, status
+        req_skills, req_experience, req_portfolio, status,
+        work_mode, req_education, age_min, age_max
     } = req.body;
 
     const combined_job_desc = `รายละเอียดงาน:\n${job_description}\n\nคุณสมบัติผู้สมัคร:\n${job_qualifications}`;
@@ -471,8 +506,10 @@ app.post('/api/save-job', (req, res) => {
     function doInsert(expires_at) {
         const sql = `
             INSERT INTO jobs_post
-            (employer_id, job_title, job_category, job_type, disability_type, disability_level, salary, job_location, accommodation, job_desc, req_skills, req_experience, req_portfolio, status, expires_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (employer_id, job_title, job_category, job_type, disability_type, disability_level,
+             salary, job_location, accommodation, job_desc, req_skills, req_experience,
+             req_portfolio, status, expires_at, work_mode, req_education, age_min, age_max)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         db.query(sql, [
             employer_id,
@@ -487,9 +524,13 @@ app.post('/api/save-job', (req, res) => {
             safeStr(combined_job_desc),
             safeStr(req_skills),
             safeStr(req_experience),
-            safeStr(req_portfolio),
+            safeStr(req_portfolio || ''),
             safeStr(status || 'open'),
-            expires_at
+            expires_at,
+            safeStr(work_mode || 'onsite'),
+            safeStr(req_education || 'any'),
+            age_min ? parseInt(age_min) : null,
+            age_max ? parseInt(age_max) : null
         ], (err, results) => {
             if (err) {
                 console.error("Database Error:", err);
@@ -579,6 +620,54 @@ app.get('/api/get-job/:jobId', (req, res) => {
     });
 });
 
+// GET /api/jobs/:id — ดึงข้อมูลโพสต์งาน (alias ของ /api/get-job/:jobId)
+app.get('/api/jobs/:id', (req, res) => {
+    const sql = `SELECT j.*, e.company_name FROM jobs_post j JOIN employers e ON j.employer_id = e.id WHERE j.id = ?`;
+    db.query(sql, [req.params.id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) return res.json({});
+        const job = { ...results[0], salary: cleanSalary(results[0].salary) };
+        res.json(job);
+    });
+});
+
+// PATCH /api/jobs/:id — แก้ไขข้อมูลโพสต์งาน
+app.patch('/api/jobs/:id', (req, res) => {
+    const { id } = req.params;
+    const {
+        employer_id, job_title, job_category, job_type, job_location, job_salary,
+        facility_desc, job_description, job_qualifications, disability_type,
+        req_skills, req_experience, req_portfolio,
+        work_mode, req_education, age_min, age_max
+    } = req.body;
+    if (!employer_id) return res.status(400).json({ success: false, error: 'ต้องระบุ employer_id' });
+
+    const combined_job_desc = `รายละเอียดงาน:\n${job_description || ''}\n\nคุณสมบัติผู้สมัคร:\n${job_qualifications || ''}`;
+
+    const sql = `
+        UPDATE jobs_post SET
+            job_title=?, job_category=?, job_type=?,
+            salary=?, job_location=?, accommodation=?,
+            job_desc=?, disability_type=?,
+            req_skills=?, req_experience=?, req_portfolio=?,
+            work_mode=?, req_education=?, age_min=?, age_max=?
+        WHERE id = ? AND employer_id = ?`;
+    db.query(sql, [
+        safeStr(job_title), safeStr(job_category), safeStr(job_type),
+        cleanSalary(job_salary) || safeStr(job_salary), safeStr(job_location), safeStr(facility_desc),
+        combined_job_desc, safeStr(disability_type),
+        safeStr(req_skills), safeStr(req_experience), safeStr(req_portfolio || ''),
+        safeStr(work_mode || 'onsite'), safeStr(req_education || 'any'),
+        age_min ? parseInt(age_min) : null,
+        age_max ? parseInt(age_max) : null,
+        id, employer_id
+    ], (err, result) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        if (result.affectedRows === 0) return res.status(403).json({ success: false, error: 'ไม่มีสิทธิ์แก้ไขโพสต์นี้' });
+        res.json({ success: true, job_id: id });
+    });
+});
+
 app.post('/api/get-ai-match', async (req, res) => {
     try {
         const response = await axios.post('http://127.0.0.1:8000/api/ai/match', req.body);
@@ -596,6 +685,62 @@ app.get('/api/get-employer-jobs/:employerId', (req, res) => {
         res.json(results);
     });
 });
+// ==========================================
+// 🌟 13b. API จัดการโพสต์งาน (แก้ไขสถานะ / ลบ / ต่ออายุ)
+// ==========================================
+
+// PATCH /api/jobs/:id/status — อัปเดต status โพสต์
+app.patch('/api/jobs/:id/status', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const allowed = ['open', 'closed', 'expired'];
+    if (!allowed.includes(status)) return res.status(400).json({ success: false, error: 'invalid status' });
+    db.query('UPDATE jobs_post SET status = ? WHERE id = ?', [status, id], (err) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// DELETE /api/jobs/:id — ลบโพสต์ (ตรวจสอบว่า employer_id ตรงกัน)
+app.delete('/api/jobs/:id', (req, res) => {
+    const { id } = req.params;
+    const { employer_id } = req.body;
+    if (!employer_id) return res.status(400).json({ success: false, error: 'ต้องระบุ employer_id' });
+    db.query('DELETE FROM jobs_post WHERE id = ? AND employer_id = ?', [id, employer_id], (err, result) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        if (result.affectedRows === 0) return res.status(403).json({ success: false, error: 'ไม่มีสิทธิ์ลบโพสต์นี้' });
+        res.json({ success: true });
+    });
+});
+
+// PATCH /api/jobs/:id/renew — ต่ออายุโพสต์ 30 วัน (เฉพาะ monthly/yearly)
+app.patch('/api/jobs/:id/renew', (req, res) => {
+    const { id } = req.params;
+    const { employer_id } = req.body;
+    if (!employer_id) return res.status(400).json({ success: false, error: 'ต้องระบุ employer_id' });
+    db.query(
+        'SELECT e.subscription_plan FROM employers e JOIN jobs_post j ON e.id = j.employer_id WHERE j.id = ? AND j.employer_id = ?',
+        [id, employer_id],
+        (err, rows) => {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            if (rows.length === 0) return res.status(403).json({ success: false, error: 'ไม่มีสิทธิ์ต่ออายุโพสต์นี้' });
+            const plan = rows[0].subscription_plan;
+            if (plan !== 'monthly' && plan !== 'yearly') {
+                return res.status(403).json({ success: false, error: 'ต้องมีแพ็คเกจรายเดือนหรือรายปีจึงจะต่ออายุได้' });
+            }
+            const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            db.query(
+                'UPDATE jobs_post SET expires_at = ?, status = "open" WHERE id = ?',
+                [newExpiry, id],
+                (err2) => {
+                    if (err2) return res.status(500).json({ success: false, error: err2.message });
+                    res.json({ success: true, expires_at: newExpiry });
+                }
+            );
+        }
+    );
+});
+
 // ==========================================
 // 14. API ลบข้อมูลเรซูเม่
 // ==========================================
@@ -732,6 +877,42 @@ app.post('/api/mark-application-viewed', (req, res) => {
 });
 
 // ==========================================
+// ==========================================
+// 🌟 18b. API ดึงสถานะใบสมัครรายเดียว (สำหรับ profile-em3.html)
+// ==========================================
+app.get('/api/application/:appId', (req, res) => {
+    const sql = `
+        SELECT a.id, a.status, a.seeker_id, a.job_id,
+               s.first_name, s.last_name,
+               j.job_title
+        FROM applications a
+        JOIN job_seekers s ON a.seeker_id = s.id
+        JOIN jobs_post j ON a.job_id = j.id
+        WHERE a.id = ?
+    `;
+    db.query(sql, [req.params.appId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) return res.status(404).json({ error: 'ไม่พบใบสมัคร' });
+        res.json(results[0]);
+    });
+});
+
+// ==========================================
+// 🌟 18c. API อัปเดตผลการเรียกสัมภาษณ์ (approved / rejected)
+// ==========================================
+app.patch('/api/applications/:appId/result', (req, res) => {
+    const { result } = req.body; // 'approved' หรือ 'rejected'
+    if (!['approved', 'rejected'].includes(result)) {
+        return res.status(400).json({ error: 'result ต้องเป็น approved หรือ rejected เท่านั้น' });
+    }
+    const sql = `UPDATE applications SET status = ? WHERE id = ?`;
+    db.query(sql, [result, req.params.appId], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, status: result });
+    });
+});
+
+// ==========================================
 // 🌟 19. Omise Payment — ชำระเงิน + อัปเดต subscription
 // ==========================================
 const OMISE_SECRET_KEY = 'skey_test_67kn2l2dltoqvdunyg5';
@@ -850,6 +1031,22 @@ app.get('/api/employer-subscription/:employerId', (req, res) => {
             );
         }
     );
+});
+
+// ==========================================
+// 🌟 22. ดึงรายชื่อเรซูเม่ผู้หางานทั้งหมด (สำหรับ monthly/yearly)
+// ==========================================
+app.get('/api/all-resumes', (req, res) => {
+    const sql = `
+        SELECT r.seeker_id, js.first_name, js.last_name, r.selected_template
+        FROM resumes r
+        JOIN job_seekers js ON r.seeker_id = js.id
+        ORDER BY js.first_name, js.last_name
+    `;
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
 });
 
 // ==========================================
@@ -1017,6 +1214,21 @@ app.put('/api/admin/verify-employer/:id', (req, res) => {
     db.query('UPDATE employers SET verification_status = ? WHERE id = ?', [status, req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true, message: `อัปเดตสถานะเป็น ${status} สำเร็จ!` });
+    });
+});
+
+// ==========================================
+// 🌟 22.7 API ลบแอคเค้าน์นายจ้าง (เมื่อ Tax ID ไม่ถูกต้อง)
+// ==========================================
+app.delete('/api/admin/delete-employer/:id', (req, res) => {
+    const { id } = req.params;
+    // ลบ jobs ของนายจ้างคนนี้ก่อน แล้วค่อยลบ account (เพื่อ data integrity)
+    db.query('DELETE FROM jobs_post WHERE employer_id = ?', [id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        db.query('DELETE FROM employers WHERE id = ?', [id], (err2, result) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            res.json({ success: true, message: 'ลบแอคเค้าน์นายจ้างและประกาศงานทั้งหมดเรียบร้อยแล้ว' });
+        });
     });
 });
 
